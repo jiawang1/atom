@@ -80,4 +80,8 @@ idea/hybristool.log*
 
 .DS_Store
 
-
+.classpath
+.pmd
+.project
+.settings/
+.springBeans
