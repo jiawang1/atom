@@ -73,16 +73,33 @@
 		 <macrodef name="atom_after_dist_copy"/>
  
 --><project name="atom_buildcallbacks">
-	
-	<!-- 
-	    Called whenever 'ant ear' is used. this callback can be used to modify the content of the ear file
-	
-	     ${ear.path}: 			path to ear
-	 -->
-	<macrodef name="atom_before_ear">
-		<sequential>
 
-			<!-- you can do anything before the EAR file is being packed -->
+	<macrodef name="generateconfig">
+		<sequential>
+			<uptodate property="updates" targetfile="${ext.atom.path}/project.properties" value="true">
+				<srcfiles file="${ext.atom.path}/acceleratoraddon/web/webroot/_ui/share/config.properties"/>
+			</uptodate>
+			<if>
+				<equals arg1="${updates}" arg2="true"/>
+				<then>
+					<concat destfile="${ext.atom.path}/acceleratoraddon/web/webroot/_ui/share/config.properties" overwrite="yes">
+						<filelist dir="${ext.atom.path}" files="project.properties"/>
+					</concat>
+					
+					<replaceregexp byline="true">
+						<regexp pattern="^((?!atom.config.).)*"/>
+						  <substitution expression=""/>
+						<fileset dir="${ext.atom.path}/acceleratoraddon/web/webroot/_ui/share/" includes="**/*.properties"/>
+					</replaceregexp>
+					<replaceregexp byline="true" file="${ext.atom.path}/acceleratoraddon/web/webroot/_ui/share/config.properties" match="^(atom.config.*)=(.*)" replace="\1=&quot;\2&quot;;"/>
+				</then>
+			</if>
+		</sequential>	
+	</macrodef>
+	
+	<macrodef name="atom_before_build">
+		<sequential>
+			<generateconfig/>
 			
 		</sequential>
 	</macrodef>

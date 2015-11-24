@@ -5,17 +5,17 @@ var Q = require('q');
 var extractor = require('./extractFile');
 
 var aParam = [
-	{"key": "enableLess", "value": "atom.LESS.enabled"},
-	{"key": "enableCompress", "value": "atom.external.compress.enabled"},
-	{"key": "lsssSourceFile", "value":  "atom.LESS.source.folder"},
-	{"key": "lessDestFolder", "value": "atom.LESS.dest.folder"},
-	{"key": "jsRootPath", "value": "atom.js.root.folder"},
-	{"key": "cssRootPath", "value": "atom.css.root.folder"},
-	{"key": "compressSourceFolder", "value": "atom.external.compress.source.filePath"},
-	{"key": "deployMode", "value": "atom.external.mode"}
+	{"key": "enableLess", "value": "atom.config.LESS.enabled"},
+	{"key": "enableCompress", "value": "atom.config.external.compress.enabled"},
+	{"key": "lsssSourceFile", "value":  "atom.config.LESS.source.folder"},
+	{"key": "lessDestFolder", "value": "atom.config.LESS.dest.folder"},
+	{"key": "jsRootPath", "value": "atom.config.js.root.folder"},
+	{"key": "cssRootPath", "value": "atom.config.css.root.folder"},
+	{"key": "compressSourceFolder", "value": "atom.config.external.compress.source.filePath"},
+	{"key": "deployMode", "value": "atom.config.external.mode"}
 ];
 
-var configPath = path.normalize("./../../../../../../config/local.properties");
+var configPath = path.normalize("./config.properties");
 
 
 exports.generateConfigutation = function(){
