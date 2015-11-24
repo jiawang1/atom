@@ -1,0 +1,35 @@
+# -----------------------------------------------------------------------
+# [y] hybris Platform 
+# 
+# Copyright (c) 2000-2015 hybris AG
+# All rights reserved.
+#  
+# This software is the confidential and proprietary information of hybris 
+# ("Confidential Information"). You shall not disclose such Confidential
+# Information and shall use it only in accordance with the terms of the
+# license agreement you entered into with hybris.
+#
+#  
+# -----------------------------------------------------------------------
+
+# you can put key/value pairs here.
+# Use Config.getParameter(..) to retrieve the values during runtime.
+
+atom.key=value
+
+# Specifies the location of the spring context file added automatically to the global platform application context.
+atom.application-context=atom-spring.xml
+
+yacceleratorstorefront.additionalWebSpringConfigs.atom=classpath:/atom/web/spring/atom-web-spring.xml
+yb2bacceleratorstorefront.additionalWebSpringConfigs.atom=classpath:/atom/web/spring/atom-web-spring.xml
+
+storefront.supportedUiExperienceLevels.electronics=DESKTOP,MOBILE
+storefront.supportedUiExperienceLevels.apparel-uk=DESKTOP,MOBILE
+storefront.supportedUiExperienceLevels.apparel-de=DESKTOP,MOBILE
+storefront.supportedUiExperienceLevels.powertools=DESKTOP
+
+
+atom.javascript.paths.desktop=/desktop/common/js/atom.js
+atom.javascript.paths.mobile=/desktop/common/js/atom.js
+atom.css.paths.desktop=/desktop/common/css/atom.css
+atom.css.paths.mobile=/mobile/common/css/atom.css
