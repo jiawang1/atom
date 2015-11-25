@@ -63,7 +63,7 @@ PropertiesLoader.prototype.loadFile = function(cb){
 			var _endInx = target.indexOf("\n", compressInx);
 			var _aValues = target.slice(compressInx,_endInx).split("=");
 				if(_aValues.length > 0){
-				return _aValues[1];
+				return _aValues[1].replace(/\r$/,"");
 			}
 
 			function findPosition(index, target, pattern){

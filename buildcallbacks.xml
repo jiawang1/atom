@@ -91,7 +91,7 @@
 						  <substitution expression=""/>
 						<fileset dir="${ext.atom.path}/acceleratoraddon/web/webroot/_ui/share/" includes="**/*.properties"/>
 					</replaceregexp>
-					<replaceregexp byline="true" file="${ext.atom.path}/acceleratoraddon/web/webroot/_ui/share/config.properties" match="^(atom.config.*)=(.*)" replace="\1=&quot;\2&quot;;"/>
+					<!--<replaceregexp byline="true" file="${ext.atom.path}/acceleratoraddon/web/webroot/_ui/share/config.properties" match="^(atom.config.*)=(.*)" replace="\1=\2;"/>-->
 				</then>
 			</if>
 		</sequential>	
@@ -99,8 +99,17 @@
 	
 	<macrodef name="atom_before_build">
 		<sequential>
+			<echo message="start front end file generation"></echo>
 			<generateconfig/>
-			
+		</sequential>
+	</macrodef>
+	
+	<macrodef name="atom_before_compile_core">
+		<sequential>
+			<echo message="start gulp"></echo>
+			<exec executable="gulp" failonerror="true"> 
+					<arg line="default --gulpfile ${ext.adamstorefront.path}/web/webroot/_ui/addons/atom/share/gulpfile.js"/> 
+			</exec>
 		</sequential>
 	</macrodef>
 		
