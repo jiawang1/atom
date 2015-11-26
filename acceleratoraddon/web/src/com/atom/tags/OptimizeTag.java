@@ -14,6 +14,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
 
 import com.atom.constants.AtomConstants;
 import com.atom.tag.AbstractTagHandler;
+import com.atom.tag.TagOptions;
 import com.granule.CompressorSettings;
 import com.granule.parser.Element;
 import com.granule.parser.TagReader;
@@ -26,24 +27,30 @@ import com.sap.adam.storefront.web.wrappers.RemoveEncodingHttpServletRequestWrap
  * 
  */
 public class OptimizeTag extends AcceleratorCompressTag
-{
+{	
+	private static final String METHOD = null;
+	private static final String ID = null;
+	private static final String OPTIONS = null;
+	private static final String BASEPATH = null;
+	private String urlpattern = null;
+	
 	@Override
 	public int doAfterBody() throws JspTagException{
-		
+		//TODO handle base URL
 		final HttpServletRequest httpRequest = (HttpServletRequest) pageContext.getRequest();
 		final BodyContent bodyContent = getBodyContent();
 		final String oldBody = bodyContent.getString();
 		bodyContent.clear();
-			
-		String atomMode = httpRequest.getParameter(AtomConstants.ATOM_MODE);
-		String sLessEnable = httpRequest.getParameter(AtomConstants.LESS_ENABLE);
-		String sCompressEnable = httpRequest.getParameter(AtomConstants.COMPRESS_ENABLE);
 		
-		boolean lessEnable = getBooleanValue(sLessEnable);
-		boolean compressEnable = getBooleanValue(sCompressEnable);
-		boolean granuleEnable = CompressorSettings.getBoolean(httpRequest.getParameter("granule"), false);
-		
-		AbstractTagHandler handler = AbstractTagHandler.buildHandlerChain(httpRequest);
+		TagOptions tp = new TagOptions();
+		tp.setBasePath(BASEPATH);
+		tp.setGenerateName("combind_12345678.min");
+		tp.setHttpRequest(httpRequest);
+		tp.setID(ID);
+		tp.setMethod(METHOD);
+		tp.setOptions(OPTIONS);
+		tp.setUrlpattern(urlpattern);
+		AbstractTagHandler handler = AbstractTagHandler.buildHandlerChain(tp);
 		String newBody = handler.process(oldBody, null);
 			
 			try
@@ -56,17 +63,5 @@ public class OptimizeTag extends AcceleratorCompressTag
 			}
 		}
 		return SKIP_BODY;
-	}
-	
-	
-	private boolean getBooleanValue(String value){
-		
-		if(value == null)return false;
-		return Boolean.valueOf(value).booleanValue();
-	}
-	
-	 List<Element> getTagsFromString(String body,String tagName){
-		  TagReader source = new TagReader(body);
-       return source.getAllElements(tagName);
 	}
 }

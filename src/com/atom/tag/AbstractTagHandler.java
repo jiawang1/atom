@@ -22,6 +22,7 @@ public abstract class AbstractTagHandler
 {
 	public abstract String process(String body, List<Element> els);
 	
+	protected TagOptions tp;
 	protected AbstractTagHandler next;
 	
 	public void setnext(AbstractTagHandler next)
@@ -43,8 +44,9 @@ public abstract class AbstractTagHandler
 		return next;
 	}
 
-	public static AbstractTagHandler buildHandlerChain(final HttpServletRequest httpRequest) throws JspTagException
-	{
+	public static AbstractTagHandler buildHandlerChain(TagOptions tp) throws JspTagException
+	{	
+		HttpServletRequest httpRequest = tp.getHttpRequest();
 		final String atomMode = httpRequest.getParameter(AtomConstants.ATOM_MODE);
 		final boolean lessEnable = getBooleanValue(httpRequest.getParameter(AtomConstants.LESS_ENABLE));
 		final boolean compressEnable = getBooleanValue(httpRequest.getParameter(AtomConstants.COMPRESS_ENABLE));
@@ -57,24 +59,24 @@ public abstract class AbstractTagHandler
 
 		if(lessEnable){
 			if(atomMode.indexOf("pro") >= 0 || granuleEnable || compressEnable){
-				handler = new LessHandler();
+				handler = new LessHandler(tp);
 			}
 		}
 		
 		if(granuleEnable){
 			if(handler == null){
-				handler = new GranuleCompressHandler();
+				handler = new GranuleCompressHandler(tp);
 			}else{
-				handler.setnext(new GranuleCompressHandler());
+				handler.setnext(new GranuleCompressHandler(tp));
 			}
 		}else if(compressEnable){
 			if(handler == null){
-				handler = new AtomCompressHandler();
+				handler = new AtomCompressHandler(tp);
 			}else{
-				handler.setnext(new AtomCompressHandler());
+				handler.setnext(new AtomCompressHandler(tp));
 			}
 		}
-		return handler==null? new NothingHandler(): handler;
+		return handler==null? new NothingHandler(tp): handler;
 
 	}
 	

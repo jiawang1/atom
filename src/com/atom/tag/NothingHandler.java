@@ -12,7 +12,15 @@ import com.granule.parser.Element;
  */
 public class NothingHandler extends AbstractTagHandler
 {
-
+	
+	public NothingHandler(){
+		super();
+	}
+	
+	public NothingHandler(TagOptions tp){
+		super();
+		this.tp = tp;
+	}
 	/* (non-Javadoc)
 	 * @see com.atom.tag.AbstractTagHandler#process(java.lang.String, java.util.List)
 	 */

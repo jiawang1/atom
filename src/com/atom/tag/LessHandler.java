@@ -6,6 +6,7 @@ package com.atom.tag;
 import java.util.List;
 
 import javax.servlet.jsp.tagext.TagSupport;
+
 import com.granule.parser.Element;
 import com.granule.parser.Tags;
 /**
@@ -14,7 +15,14 @@ import com.granule.parser.Tags;
  */
 public class LessHandler extends AbstractTagHandler
 {
-
+	public LessHandler(){
+		super();
+	}
+	
+	public LessHandler(TagOptions tp){
+		super();
+		this.tp = tp;
+	}
 	/*
 	 * (non-Javadoc)
 	 * 
