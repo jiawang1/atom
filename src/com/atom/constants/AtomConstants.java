@@ -25,5 +25,7 @@ public final class AtomConstants extends GeneratedAtomConstants
 		//empty to avoid instantiating this constant class
 	}
 
-	// implement here constants used by this extension
+	public static final String ATOM_MODE = "atomMode";
+	public static final String LESS_ENABLE = "lessEnabled";
+	public static final String COMPRESS_ENABLE = "compressEnabled";
 }

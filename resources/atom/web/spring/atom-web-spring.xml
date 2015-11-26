@@ -13,6 +13,7 @@
 
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
        xmlns:aop="http://www.springframework.org/schema/aop"
        xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
@@ -41,6 +42,24 @@
 	</bean>
 	<bean id="AtomBeforeViewHandlerListMergeDirective" depends-on="beforeViewHandlersList" parent="listMergeDirective">
 		<property name="add" ref="getAtomBeforeViewHandler"/>
+	</bean>
+	
+	<bean id="atomOptimizeInterceptor" class="com.atom.interceptors.AtomOptimizeInterceptor">
+		<property name="siteConfigService" ref="siteConfigService"/>
+	</bean>
+	
+	<bean id="getAtomOptimizeBeforeViewHandler" parent="beforeViewHandlerAdapter">
+		<property name="adaptee">
+			<ref bean="atomOptimizeViewHandler"/>
+		</property>
+	</bean>
+
+	<bean id="atomOptimizeViewHandler" class="com.atom.interceptors.BeforeViewHandler.AtomOptimizeViewHandler">
+		<property name="siteConfigService" ref="siteConfigService"/>
+	</bean>
+	
+	<bean depends-on="beforeViewHandlersList" parent="listMergeDirective">
+		<property name="add" ref="getAtomOptimizeBeforeViewHandler"/>
 	</bean>
 
 </beans>
