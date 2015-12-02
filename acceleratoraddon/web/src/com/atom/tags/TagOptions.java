@@ -20,6 +20,7 @@ public class TagOptions
 	private String generateName = null;
 	private String jsDestPath = null;
 	private String cssDestPath = null;
+	private boolean onlineLess = false;
 	/**
 	 * @return the method
 	 */
@@ -133,6 +134,14 @@ public class TagOptions
 	
 	public void setCssDestPath(String cssDestPath){
 		this.cssDestPath = cssDestPath;
+	}
+	
+	public void setOnlineLess(boolean online){
+		this.onlineLess = online;
+	}
+	
+	public boolean isOnlineLess(){
+		return this.onlineLess;
 	}
 	
 }

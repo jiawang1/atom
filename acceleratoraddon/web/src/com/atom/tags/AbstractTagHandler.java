@@ -54,8 +54,8 @@ public abstract class AbstractTagHandler
 		final boolean lessEnable = getBooleanValue(session.getAttribute(AtomConstants.LESS_ENABLE));
 		final boolean compressEnable = getBooleanValue(session.getAttribute(AtomConstants.COMPRESS_ENABLE));
 		final boolean granuleEnable = CompressorSettings.getBoolean(httpRequest.getParameter("granule"), false);
-		tp.setJsDestPath(httpRequest.getContextPath() + session.getAttribute(AtomConstants.COMPRESS_JS_PATH).toString());
-		tp.setCssDestPath(httpRequest.getContextPath() + session.getAttribute(AtomConstants.COMPRESS_CSS_PATH).toString());
+		tp.setJsDestPath(httpRequest.getContextPath() + toAbsolutePath(session.getAttribute(AtomConstants.COMPRESS_JS_PATH).toString()));
+		tp.setCssDestPath(httpRequest.getContextPath() + toAbsolutePath(session.getAttribute(AtomConstants.COMPRESS_CSS_PATH).toString())); 
 		
 		AbstractTagHandler handler = null;
 		if (granuleEnable && compressEnable)
@@ -64,9 +64,8 @@ public abstract class AbstractTagHandler
 		}
 
 		if(lessEnable){
-			if(atomMode.indexOf("pro") >= 0 || granuleEnable || compressEnable){
+				tp.setOnlineLess(atomMode.indexOf("dev") >= 0 && !compressEnable);
 				handler = new LessHandler(tp);
-			}
 		}
 		
 		if(granuleEnable){
@@ -101,4 +100,12 @@ public abstract class AbstractTagHandler
 		}
 		return false;
 	}
+	
+	protected String toAbsolutePath(String path){
+		
+		if(path.indexOf("/_ui") > 0){
+			return path.substring(path.indexOf("/_ui"));
+		}
+	}
+
 }

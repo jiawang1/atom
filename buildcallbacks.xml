@@ -99,6 +99,7 @@
 	<macrodef name="atom_before_build">
 		<sequential>
 			<echo message="start front end file generation"></echo>
+			<echo message="${development.mode}"></echo>
 			<generateconfig/>
 			<!-- temp solution-->
 			<copy todir="${ext.adamstorefront.path}/web/webroot/_ui/addons/atom/share">
@@ -115,7 +116,7 @@
 		<sequential>
 			<echo message="start gulp"></echo>
 			<exec executable="gulp" failonerror="true"> 
-					<arg line="default --gulpfile ${ext.adamstorefront.path}/web/webroot/_ui/addons/atom/share/gulpfile.js --cwd ${ext.adamstorefront.path}/web/webroot"/> 
+					<arg line="default --gulpfile ${ext.adamstorefront.path}/web/webroot/_ui/addons/atom/share/gulpfile.js --cwd ${ext.adamstorefront.path}/web/webroot --devEnable ${development.mode}"/> 
 			</exec>
 		</sequential>
 	</macrodef>

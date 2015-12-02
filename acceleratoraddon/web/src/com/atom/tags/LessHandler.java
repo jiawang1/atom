@@ -35,6 +35,10 @@ public class LessHandler extends AbstractTagHandler
 		String newBody = null;
 		if(tagList.size() > 0){
 			 newBody = body.replaceAll("stylesheet/less", "stylesheet").replaceAll(".less", ".css");
+		}else{
+			if(tp.isOnlineLess){
+				
+			}
 		}
 		if(hasNext()){
 			return this.next.process(newBody==null?body:newBody , tagList);

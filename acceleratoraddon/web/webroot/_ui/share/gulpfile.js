@@ -10,7 +10,20 @@ var less = require('gulp-less'),
 
 var compilor = require("./hybrisCompileLoader");
 
-var oConfiguration = {};
+var oConfiguration = (function(args){
+
+	var _o = {
+		devEnable: false 
+	};
+	for(var i = 0, j= args.length; i < j; i++){
+		if(args[i] === "--devEnable"){
+			_o.devEnable = !!args[i + 1];
+			return _o;
+		}
+	}
+	return _o;
+
+})(process.argv.slice(2));
 
 	gulp.task("build-less",function(){
 
@@ -20,7 +33,7 @@ var oConfiguration = {};
 
 	gulp.task("prepare-config",function(cb){
 
-		compilor.generateConfigutation().then(function(data){
+		compilor.generateConfigutation(oConfiguration).then(function(data){
 			oConfiguration = data;
 			cb();
 		}, function(err){
@@ -31,7 +44,7 @@ var oConfiguration = {};
 	gulp.task("compile-less",["prepare-config"], function(cb){
 
 		if(oConfiguration.enableLess){
-			if(oConfiguration.deployMode.indexOf("pro") >= 0 || oConfiguration.enableCompress ){
+			if(!oConfiguration.devEnable || oConfiguration.enableCompress ){
 				for(var i = 0, j = oConfiguration.lessSourceFile.length; i < j ; i++){
 					gulp.src(oConfiguration.lessSourceFile[i])
 						.pipe(less())

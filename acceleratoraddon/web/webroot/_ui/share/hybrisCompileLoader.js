@@ -13,16 +13,14 @@ var aParam = [
 	{"key": "cssRootPath", "value": "atom.config.css.root.folder"},
 	{"key": "combindJSDest", "value": "atom.config.compress.js.dest.filePath"},
 	{"key": "combindCSSDest", "value": "atom.config.compress.css.dest.filePath"},
-	{"key": "compressSourceFolder", "value": "atom.config.compress.source.filePath"},
-	{"key": "deployMode", "value": "atom.config.mode"}
+	{"key": "compressSourceFolder", "value": "atom.config.compress.source.filePath"}
 ];
 
 var configPath = path.normalize("./_ui/addons/atom/share/config.properties");
 
 
-exports.generateConfigutation = function(){
+exports.generateConfigutation = function(oConfiguration){
 
-	var oConfiguration = {};
 	var deferred = Q.defer();
 
 	var oLoader = new PropertiesLoader(configPath);
@@ -44,7 +42,7 @@ exports.generateConfigutation = function(){
 			deal with LESS 
 		*/
 		if(!!oConfiguration.enableLess){
-			if(!!oConfiguration.enableCompress || oConfiguration.deployMode.indexOf('pro') >= 0){
+			if(!!oConfiguration.enableCompress || !oConfiguration.devEnable){
 					if(oConfiguration.lessSourceFile){
 						var aPath = oConfiguration.lessSourceFile.split(",");
 							for(var i = 0, j = aPath.length; i < j; i++){
