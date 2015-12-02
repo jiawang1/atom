@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.atom.tag;
+package com.atom.tags;
 
 import java.util.List;
 
@@ -29,7 +29,7 @@ public class LessHandler extends AbstractTagHandler
 	 * @see com.atom.tag.TagsBodyHandler#process()
 	 */
 	@Override
-	public String process(String body, List<Element> els)
+	public String process(String body, List<Element> els) throws Exception
 	{
 		List<Element> tagList = getTagsFromString(body, Tags.LINK);
 		String newBody = null;

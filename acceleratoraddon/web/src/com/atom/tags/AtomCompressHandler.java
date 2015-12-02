@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.atom.tag;
+package com.atom.tags;
 
 import java.util.List;
 
@@ -33,24 +33,22 @@ public class AtomCompressHandler extends AbstractTagHandler
 	 * @see com.atom.tag.TagsBodyHandler#process()
 	 */
 	@Override
-	public String process(String body, List<Element> els)
+	public String process(String body, List<Element> els) throws Exception
 	{
 		
 		List<Element> elist = els;
-		String newBody = null
+		String newBody = null;
 	
 		if(elist == null || elist.size() == 0){
 			elist = getTagsFromString(body, Tags.LINK);
 		}
 		
 		if(elist != null && elist.size() > 0){
-				
-			newBody = generateBody(elist, "href", ".css");
+			newBody = generateBody(body,elist, "href", ".css", this.tp.getCssDestPath());
 		}else{
-			
-			List<Element> elist = getTagsFromString(body, Tags.SCRIPT);
+			elist = getTagsFromString(body, Tags.SCRIPT);
 			if(elist != null && elist.size() > 0 ){
-				newBody = generateBody(elist, "src", ".js");
+				newBody = generateBody(body, elist, "src", ".js",this.tp.getJsDestPath());
 			}
 		}
 		newBody = newBody == null?body:newBody;
@@ -63,7 +61,7 @@ public class AtomCompressHandler extends AbstractTagHandler
 	}
 
 	
-	private String generateBody(List<Element> els, String targetAttr, String format ){
+	private String generateBody(String body, List<Element> els, String targetAttr, String format, String path){
 		StringBuilder sb = new StringBuilder();
 		int start = 0;
 		for(int i = 0; i < els.size(); i++){
@@ -74,7 +72,7 @@ public class AtomCompressHandler extends AbstractTagHandler
 				Attribute a = ele.getAttributes().get(targetAttr);
 				sb.append(body.substring(ele.getBegin(), a.getBegin()));
 				sb.append(targetAttr + "=\"");
-				sb.append(generateCombinedPath(a, format));
+				sb.append(generateCombinedPath(path) + "combind.min" + format);
 				sb.append("\" ");
 				sb.append(body.substring(a.getEnd(), ele.getEnd()));
 			}
@@ -84,10 +82,11 @@ public class AtomCompressHandler extends AbstractTagHandler
 		return sb.toString();
 	}
 	
-	private String generateCombinedPath(Attribute a, String format){
+	private String generateCombinedPath(String path){
 		
-		String value = a.getValue();
-		
-		return value.substring(0, value.lastIndexOf("/") +1) + format;
+		if(path.startsWith(".")){
+			return path.substring(path.indexOf("/"));
+		}
+		return path;
 	}
 }

@@ -6,16 +6,18 @@ var extractor = require('./extractFile');
 
 var aParam = [
 	{"key": "enableLess", "value": "atom.config.LESS.enabled"},
-	{"key": "enableCompress", "value": "atom.config.external.compress.enabled"},
-	{"key": "lsssSourceFile", "value":  "atom.config.LESS.source.folder"},
+	{"key": "enableCompress", "value": "atom.config.compress.enabled"},
+	{"key": "lessSourceFile", "value":  "atom.config.LESS.source.folder"},
 	{"key": "lessDestFolder", "value": "atom.config.LESS.dest.folder"},
 	{"key": "jsRootPath", "value": "atom.config.js.root.folder"},
 	{"key": "cssRootPath", "value": "atom.config.css.root.folder"},
-	{"key": "compressSourceFolder", "value": "atom.config.external.compress.source.filePath"},
-	{"key": "deployMode", "value": "atom.config.external.mode"}
+	{"key": "combindJSDest", "value": "atom.config.compress.js.dest.filePath"},
+	{"key": "combindCSSDest", "value": "atom.config.compress.css.dest.filePath"},
+	{"key": "compressSourceFolder", "value": "atom.config.compress.source.filePath"},
+	{"key": "deployMode", "value": "atom.config.mode"}
 ];
 
-var configPath = path.normalize("./config.properties");
+var configPath = path.normalize("./_ui/addons/atom/share/config.properties");
 
 
 exports.generateConfigutation = function(){
@@ -32,19 +34,23 @@ exports.generateConfigutation = function(){
  		}
 
  		for(var i = 0, j = aParam.length; i < j; i++){
- 			oConfiguration[aParam[i].key] = oLoader.findPropertyValue(sConfigFile, aParam[i].value);
+
+ 			var _value = oLoader.findPropertyValue(sConfigFile, aParam[i].value);
+ 			if(path.isAbsolute(_value)){
+ 				oConfiguration[aParam[i].key] = toRelativePath(_value);
+ 			}
  		}
 		/* 
 			deal with LESS 
 		*/
 		if(!!oConfiguration.enableLess){
 			if(!!oConfiguration.enableCompress || oConfiguration.deployMode.indexOf('pro') >= 0){
-					if(oConfiguration.lsssSourceFile){
-						var aPath = oConfiguration.lsssSourceFile.split(",");
+					if(oConfiguration.lessSourceFile){
+						var aPath = oConfiguration.lessSourceFile.split(",");
 							for(var i = 0, j = aPath.length; i < j; i++){
 								aPath[i] = path.normalize(aPath[i]+ "/*.less");
 						}
-						oConfiguration.lsssSourceFile = aPath;
+						oConfiguration.lessSourceFile = aPath;
 					}
 			}
 		}
@@ -75,6 +81,13 @@ exports.generateConfigutation = function(){
 			Array.prototype.slice.apply(arguments,[1]).forEach(function(_arays){
 				_arays.forEach(function(item, index, current){  current[index] = path.normalize(root + item); });
 			});
+		}
+
+		function toRelativePath(path){
+			if(path.indexOf("/") === 0 && path.indexOf("webroot") < 0 && path.indexOf("//") !== 0){
+				return "." + path;
+			}
+			return path;
 		}
 
  	});

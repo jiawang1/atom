@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.atom.tag;
+package com.atom.tags;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -18,6 +18,8 @@ public class TagOptions
 	private String urlpattern = null;
 	private HttpServletRequest httpRequest = null;
 	private String generateName = null;
+	private String jsDestPath = null;
+	private String cssDestPath = null;
 	/**
 	 * @return the method
 	 */
@@ -117,6 +119,20 @@ public class TagOptions
 		this.generateName = generateTime;
 	}
 
+	public String getJsDestPath(){
+		return this.jsDestPath;
+	}
 	
+	public void setJsDestPath(String jsDestPath){
+		this.jsDestPath = jsDestPath;
+	}
+	
+	public String getCssDestPath(){
+		return this.cssDestPath;
+	}
+	
+	public void setCssDestPath(String cssDestPath){
+		this.cssDestPath = cssDestPath;
+	}
 	
 }

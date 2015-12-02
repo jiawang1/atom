@@ -13,14 +13,13 @@ import javax.servlet.jsp.tagext.BodyContent;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 
 import com.atom.constants.AtomConstants;
-import com.atom.tag.AbstractTagHandler;
-import com.atom.tag.TagOptions;
+import com.atom.tags.AbstractTagHandler;
+import com.atom.tags.TagOptions;
 import com.granule.CompressorSettings;
 import com.granule.parser.Element;
 import com.granule.parser.TagReader;
 import com.sap.adam.storefront.tags.AcceleratorCompressTag;
-import com.sap.adam.storefront.web.wrappers.RemoveEncodingHttpServletRequestWrapper;
-
+import com.atom.httpwrapper.RemoveEncodingRequestWrapper;
 
 /**
  * @author i054410
@@ -36,32 +35,38 @@ public class OptimizeTag extends AcceleratorCompressTag
 	
 	@Override
 	public int doAfterBody() throws JspTagException{
-		//TODO handle base URL
-		final HttpServletRequest httpRequest = (HttpServletRequest) pageContext.getRequest();
+		
+		final HttpServletRequest httpRequest = new RemoveEncodingRequestWrapper((HttpServletRequest) pageContext.getRequest(),urlpattern);
+
 		final BodyContent bodyContent = getBodyContent();
 		final String oldBody = bodyContent.getString();
-		bodyContent.clear();
+		bodyContent.clearBody();
 		
 		TagOptions tp = new TagOptions();
 		tp.setBasePath(BASEPATH);
-		tp.setGenerateName("combind_12345678.min");
+		tp.setGenerateName("combind.min");
 		tp.setHttpRequest(httpRequest);
 		tp.setID(ID);
 		tp.setMethod(METHOD);
 		tp.setOptions(OPTIONS);
 		tp.setUrlpattern(urlpattern);
 		AbstractTagHandler handler = AbstractTagHandler.buildHandlerChain(tp);
-		String newBody = handler.process(oldBody, null);
-			
 			try
 			{	
+				String newBody = handler.process(oldBody, null);
 				getPreviousOut().print(newBody);
 			}
-			catch (final IOException e)
+			catch (final Exception e)
 			{
 				throw new JspTagException(e);
 			}
-		}
+			
+		
 		return SKIP_BODY;
+	}
+	
+	
+	public void setUrlpattern(String urlPattern){
+		this.urlpattern = urlPattern;
 	}
 }

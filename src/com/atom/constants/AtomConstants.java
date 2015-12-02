@@ -28,4 +28,6 @@ public final class AtomConstants extends GeneratedAtomConstants
 	public static final String ATOM_MODE = "atomMode";
 	public static final String LESS_ENABLE = "lessEnabled";
 	public static final String COMPRESS_ENABLE = "compressEnabled";
+	public static final String COMPRESS_JS_PATH = "compressDestJSPath";
+	public static final String COMPRESS_CSS_PATH = "compressDestCSSPath";
 }

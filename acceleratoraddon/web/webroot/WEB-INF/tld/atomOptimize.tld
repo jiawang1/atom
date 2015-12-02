@@ -7,13 +7,13 @@
 	<description>compress and LESS tag library</description>
 	<tlib-version>0.2</tlib-version>
 	<short-name>optimize</short-name>
-	<uri>http://com.sap.tag/optimize</uri>
+	<uri>http://com.atom.tag/optimize</uri>
 
 	<tag>
 		<name>optimize</name>
 		<tag-class>com.atom.tags.OptimizeTag</tag-class>
 		<body-content>JSP</body-content>
-<!-- 		<attribute>
+ 		<attribute>
 			<name>method</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
@@ -37,7 +37,7 @@
 			<name>urlpattern</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
-		</attribute> -->
+		</attribute> 
 	</tag>
 
 </taglib>
