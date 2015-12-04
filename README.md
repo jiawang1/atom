@@ -11,6 +11,7 @@ dowload this project and follow hybris addon installation rules to add this to y
 
 Since this addon depends on node to complie Less and compress js, css. Nodejs is a prerequisite. 
  
+## manual action
 
 ## attention
 - all CSS rules should have clear priority. all CSS/LESS files loaded disordered.
