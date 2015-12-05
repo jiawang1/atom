@@ -25,7 +25,7 @@ public class NothingHandler extends AbstractTagHandler
 	 * @see com.atom.tag.AbstractTagHandler#process(java.lang.String, java.util.List)
 	 */
 	@Override
-	public String process(String body, List<Element> els) throws Exception
+	public String process(String body) throws Exception
 	{
 		return body;
 	}

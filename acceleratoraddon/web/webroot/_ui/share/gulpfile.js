@@ -43,12 +43,13 @@ var oConfiguration = (function(args){
 
 	gulp.task("compile-less",["prepare-config"], function(cb){
 
+		var __destFolder = oConfiguration.lessDestFolder;
 		if(oConfiguration.enableLess){
 			if(!oConfiguration.devEnable || oConfiguration.enableCompress ){
 				for(var i = 0, j = oConfiguration.lessSourceFile.length; i < j ; i++){
 					gulp.src(oConfiguration.lessSourceFile[i])
 						.pipe(less())
-    					.pipe(gulp.dest(oConfiguration.lessSourceFile[i].substring(0, oConfiguration.lessSourceFile[i].length - 6)));
+    					.pipe(gulp.dest(__destFolder || oConfiguration.lessSourceFile[i].substring(0, oConfiguration.lessSourceFile[i].length - 6) ));
 				}
 				cb();
 			}
@@ -58,16 +59,16 @@ var oConfiguration = (function(args){
 	});
 
 	gulp.task("compress-css",['compile-less'], function(cb){
-			
 			if(oConfiguration.enableCompress){
-				console.log(oConfiguration.aCSSMap);
+				gulp.src(oConfiguration.aCSSMap)
+				.pipe(concat("combind.min.css"))
+				.pipe(minifycss())
+				.pipe(gulp.dest(oConfiguration.combindCSSDest));
 				cb();
 
 			}else{
 				cb();
 			}
-
-
 	});
 
 	gulp.task("compress-js", ["prepare-config"],function(cb){
@@ -76,7 +77,6 @@ var oConfiguration = (function(args){
 				if(oConfiguration.combindJSDest){
 					try{
 						fs.accessSync(oConfiguration.combindJSDest, fs.W_OK);
-
 						merge(gulp.src(oConfiguration.oJSMap.minjs), minifyjs(oConfiguration.oJSMap.js))
 						.pipe(concat("combind.min.js"))
 						.pipe(gulp.dest(oConfiguration.combindJSDest));
@@ -97,5 +97,5 @@ var oConfiguration = (function(args){
 	});
 
 	gulp.task("default",["compress-css", "compress-js"], function(cb){
-		
+		cb();
 	});

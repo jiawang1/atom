@@ -6,12 +6,17 @@ var Q = require('q');
 
 exports.extractCSS = function(filePath, option){
 	/** ignore media type */
-	return extractFile(filePath, new RegExp(/^<link.*(href=["|'].*["|'])/i), ".css");
+	return extractFile(filePath, new RegExp(/^<link.*(href=["|'].*["|'])/i), new RegExp(/css|less/)).then(function(aMap){
+		console.log("css return value " + Object.prototype.toString.call(aMap));
+		return  aMap.map(function(item){
+			return item.replace(/.less/, ".css");
+		});
+	});
 };
 
 exports.extractJS = function(filePath, option) {
 
-	return extractFile(filePath, new RegExp(/^<script.*(src=["|'].*["|'])/i), ".js").then(function(aMap){
+	return extractFile(filePath, new RegExp(/^<script.*(src=["|'].*["|'])/i), new RegExp(/js/)).then(function(aMap){
 				var oMap = {};
 				oMap.js = [];
 				oMap.minjs = [];
@@ -84,7 +89,7 @@ function extractFile(filePath, pattern, extName){
 		if(aMatch && aMatch.length > 1){
 			var aResult = aMatch[1].split("=");
 			aResult[1] = aResult[1].replace(/^"(.*)"/,"$1");
-			if(aResult.length > 1 && path.extname(aResult[1]).toLowerCase() === extName){
+			if(aResult.length > 1 && path.extname(aResult[1]).toLowerCase().search(extName) >=0){
 				aResult[1] = aResult[1].replace(/^\$\{.*\}/, "");
 				aPathMap.push(path.normalize(aResult[1]));
 			}

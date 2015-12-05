@@ -13,7 +13,7 @@ var aParam = [
 	{"key": "cssRootPath", "value": "atom.config.css.root.folder"},
 	{"key": "combindJSDest", "value": "atom.config.compress.js.dest.filePath"},
 	{"key": "combindCSSDest", "value": "atom.config.compress.css.dest.filePath"},
-	{"key": "compressSourceFolder", "value": "atom.config.compress.source.filePath"}
+	{"key": "compressSourceFolder", "value": "atom.config.compress.sourceTag.folder"}
 ];
 
 var configPath = path.normalize("./_ui/addons/atom/share/config.properties");
@@ -32,11 +32,9 @@ exports.generateConfigutation = function(oConfiguration){
  		}
 
  		for(var i = 0, j = aParam.length; i < j; i++){
-
  			var _value = oLoader.findPropertyValue(sConfigFile, aParam[i].value);
- 			if(path.isAbsolute(_value)){
- 				oConfiguration[aParam[i].key] = toRelativePath(_value);
- 			}
+			oConfiguration[aParam[i].key] = path.isAbsolute(_value)?toRelativePath(_value):_value;
+
  		}
 		/* 
 			deal with LESS 

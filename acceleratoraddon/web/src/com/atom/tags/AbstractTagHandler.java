@@ -21,7 +21,7 @@ import com.granule.CompressorSettings;
  */
 public abstract class AbstractTagHandler
 {
-	public abstract String process(String body, List<Element> els) throws Exception;
+	public abstract String process(String body) throws Exception;
 	
 	protected TagOptions tp;
 	protected AbstractTagHandler next;
@@ -50,12 +50,12 @@ public abstract class AbstractTagHandler
 		HttpServletRequest httpRequest = tp.getHttpRequest();
 		HttpSession session = httpRequest.getSession();
 		 
-		final String atomMode = (String)session.getAttribute(AtomConstants.ATOM_MODE);
+		final boolean isDev = getBooleanValue(session.getAttribute(AtomConstants.ATOM_MODE));
 		final boolean lessEnable = getBooleanValue(session.getAttribute(AtomConstants.LESS_ENABLE));
 		final boolean compressEnable = getBooleanValue(session.getAttribute(AtomConstants.COMPRESS_ENABLE));
 		final boolean granuleEnable = CompressorSettings.getBoolean(httpRequest.getParameter("granule"), false);
-		tp.setJsDestPath(httpRequest.getContextPath() + toAbsolutePath(session.getAttribute(AtomConstants.COMPRESS_JS_PATH).toString()));
-		tp.setCssDestPath(httpRequest.getContextPath() + toAbsolutePath(session.getAttribute(AtomConstants.COMPRESS_CSS_PATH).toString())); 
+		tp.setJsDestPath(httpRequest.getContextPath() + toAbsolutePath(session.getAttribute(AtomConstants.COMPRESS_JS_PATH)));
+		tp.setCssDestPath(httpRequest.getContextPath() + toAbsolutePath(session.getAttribute(AtomConstants.COMPRESS_CSS_PATH))); 
 		
 		AbstractTagHandler handler = null;
 		if (granuleEnable && compressEnable)
@@ -64,7 +64,7 @@ public abstract class AbstractTagHandler
 		}
 
 		if(lessEnable){
-				tp.setOnlineLess(atomMode.indexOf("dev") >= 0 && !compressEnable);
+				tp.setOnlineLess(isDev && !compressEnable);
 				handler = new LessHandler(tp);
 		}
 		
@@ -101,11 +101,11 @@ public abstract class AbstractTagHandler
 		return false;
 	}
 	
-	protected String toAbsolutePath(String path){
+	protected static String toAbsolutePath(Object path){
 		
-		if(path.indexOf("/_ui") > 0){
-			return path.substring(path.indexOf("/_ui"));
-		}
+		String _path = path==null?"":path.toString();
+	
+		return _path.indexOf("/_ui") > 0?_path.substring(_path.indexOf("/_ui")):_path;
 	}
 
 }

@@ -31,7 +31,7 @@ public class GranuleCompressHandler extends AbstractTagHandler
 	 * @see com.atom.tag.AbstractTagHandler#process(java.lang.String, java.util.List)
 	 */
 	@Override
-	public String process(String body, List<Element> els) throws Exception
+	public String process(String body) throws Exception
 	{	
 		final CompressTagHandler compressor = new CompressTagHandler(tp.getID(), tp.getMethod(), tp.getOptions(), tp.getBasePath());
 		final RealRequestProxy runtimeRequest = new RealRequestProxy(tp.getHttpRequest());

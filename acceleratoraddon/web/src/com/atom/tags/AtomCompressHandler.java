@@ -33,15 +33,11 @@ public class AtomCompressHandler extends AbstractTagHandler
 	 * @see com.atom.tag.TagsBodyHandler#process()
 	 */
 	@Override
-	public String process(String body, List<Element> els) throws Exception
+	public String process(String body) throws Exception
 	{
 		
-		List<Element> elist = els;
+		List<Element> elist = getTagsFromString(body, Tags.LINK);;
 		String newBody = null;
-	
-		if(elist == null || elist.size() == 0){
-			elist = getTagsFromString(body, Tags.LINK);
-		}
 		
 		if(elist != null && elist.size() > 0){
 			newBody = generateBody(body,elist, "href", ".css", this.tp.getCssDestPath());
@@ -54,7 +50,7 @@ public class AtomCompressHandler extends AbstractTagHandler
 		newBody = newBody == null?body:newBody;
 		
 		if(this.hasNext()){
-			return this.next.process(newBody, elist);
+			return this.next.process(newBody);
 		}
 		
 		return newBody;
@@ -76,7 +72,7 @@ public class AtomCompressHandler extends AbstractTagHandler
 				sb.append("\" ");
 				sb.append(body.substring(a.getEnd(), ele.getEnd()));
 			}
-			start = els.get(i).getEnd();
+			start = ele.getEnd();
 		}
 		
 		return sb.toString();

@@ -53,7 +53,7 @@ public class OptimizeTag extends AcceleratorCompressTag
 		AbstractTagHandler handler = AbstractTagHandler.buildHandlerChain(tp);
 			try
 			{	
-				String newBody = handler.process(oldBody, null);
+				String newBody = handler.process(oldBody);
 				getPreviousOut().print(newBody);
 			}
 			catch (final Exception e)
