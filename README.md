@@ -6,12 +6,9 @@ this addon privodes following features:
 
 ##installation
 
-dowload this project and follow hybris addon installation rules to add this to your hybris storefront. after this, still manual actions needed:
+dowload this project and follow hybris addon installation rules to add this to your hybris storefront. nodejs is prerequite, you can download it [here](http://www.generalichina.com/)
+After this, still manual actions needed:
 
-
-Since this addon depends on node to complie Less and compress js, css. Nodejs is a prerequisite. 
  
-## manual action
-
 ## attention
 - all CSS rules should have clear priority. all CSS/LESS files loaded disordered.
