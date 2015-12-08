@@ -1,0 +1,27 @@
+{
+  "name": "hybris-atom",
+  "version": "0.0.1",
+  "description": "optimize hybris static resources",
+  "main": "gulpfile.js",
+  "scripts": {
+    "test": "cd test && node index.js"
+  },
+  "dependencies": {
+    "phpfn": "^1.0.0",
+    "collect-stream": "^1.0.0",
+    "deep-extend": "^0.4.0",
+    "gulp-util": "2.2.X",
+    "http-https": "^1.0.0",
+    "minimatch": "^2.0.8",
+    "through2": "0.4.X"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.0",
+    "gulp-bump": "0.1.X",
+    "gulp-eslint": "0.1.X",
+    "gulp-load-plugins": "0.7.X",
+    "minimist": "1.1.X",
+    "tape": "^4.0.0"
+  },
+  "license": "MIT"
+}

@@ -105,10 +105,29 @@
 			<copy todir="${ext.adamstorefront.path}/web/webroot/_ui/addons/atom/share">
 				<fileset dir="${ext.atom.path}/acceleratoraddon/web/webroot/_ui/share">
 		              <include name="*.js" />
-		              <include name="*.properties" />
-				             
+					  <include name="./node_modules/*.js" />
+		              <include name="*.properties" />   
 	           </fileset>
 			</copy>
+			
+			<available file="${ext.adamstorefront.path}/web/webroot/_ui/addons/atom/share/node_modules" property="nodeModule.exist" />   
+						<!--	<fileset dir="${ext.atom.path}/acceleratoraddon/web/webroot/_ui/share">
+					              <include name="*.js" />
+								  <include name="./node_modules/*.js" />
+				           </fileset> -->
+						
+							<if>
+								<equals arg1="${nodeModule.exist}" arg2="false"/>
+								<then>
+									<mkdir dir="${ext.adamstorefront.path}/web/webroot/_ui/addons/atom/share/node_modules"/>
+								</then>
+							</if>
+			
+			<copy todir="${ext.adamstorefront.path}/web/webroot/_ui/addons/atom/share/node_modules">
+					<fileset dir="${ext.atom.path}/acceleratoraddon/web/webroot/_ui/share/node_modules">
+			              <include name="*.js" />
+		           </fileset>
+				</copy>
 		</sequential>
 	</macrodef>
 	

@@ -6,6 +6,7 @@ var less = require('gulp-less'),
     uglify = require('gulp-uglify'),        
     concat = require('gulp-concat'),      
     merge = require('merge-stream'),
+    cssimport = require("gulp-cssimport"),
     rename = require('gulp-rename');        
 
 var compilor = require("./hybrisCompileLoader");
@@ -61,6 +62,7 @@ var oConfiguration = (function(args){
 	gulp.task("compress-css",['compile-less'], function(cb){
 			if(oConfiguration.enableCompress){
 				gulp.src(oConfiguration.aCSSMap)
+				.pipe(cssimport())
 				.pipe(concat("combind.min.css"))
 				.pipe(minifycss())
 				.pipe(gulp.dest(oConfiguration.combindCSSDest));
