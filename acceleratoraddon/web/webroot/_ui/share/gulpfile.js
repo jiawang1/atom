@@ -61,8 +61,15 @@ var oConfiguration = (function(args){
 
 	gulp.task("compress-css",['compile-less'], function(cb){
 			if(oConfiguration.enableCompress){
+				var __oprions = oConfiguration.buildProxyHost?{
+					"httpRequestOptions":{
+						"host":oConfiguration.buildProxyHost,
+						"port":oConfiguration.buildProxyPort
+					}
+				}:undefined;
+
 				gulp.src(oConfiguration.aCSSMap)
-				.pipe(cssimport())
+				.pipe(cssimport(__oprions))
 				.pipe(concat("combind.min.css"))
 				.pipe(minifycss())
 				.pipe(gulp.dest(oConfiguration.combindCSSDest));
@@ -101,3 +108,5 @@ var oConfiguration = (function(args){
 	gulp.task("default",["compress-css", "compress-js"], function(cb){
 		cb();
 	});
+
+//default --gulpfile ./_ui/addons/atom/share/gulpfile.js --cwd . --devEnable true

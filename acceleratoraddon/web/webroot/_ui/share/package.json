@@ -15,13 +15,5 @@
     "minimatch": "^2.0.8",
     "through2": "0.4.X"
   },
-  "devDependencies": {
-    "gulp": "^3.9.0",
-    "gulp-bump": "0.1.X",
-    "gulp-eslint": "0.1.X",
-    "gulp-load-plugins": "0.7.X",
-    "minimist": "1.1.X",
-    "tape": "^4.0.0"
-  },
   "license": "MIT"
 }

@@ -110,24 +110,27 @@
 	           </fileset>
 			</copy>
 			
-			<available file="${ext.adamstorefront.path}/web/webroot/_ui/addons/atom/share/node_modules" property="nodeModule.exist" />   
-						<!--	<fileset dir="${ext.atom.path}/acceleratoraddon/web/webroot/_ui/share">
-					              <include name="*.js" />
-								  <include name="./node_modules/*.js" />
-				           </fileset> -->
-						
+			<available file="${ext.adamstorefront.path}/web/webroot/_ui/addons/atom/share/node_modules" type="dir" property="nodeModule.exist" />   
 							<if>
-								<equals arg1="${nodeModule.exist}" arg2="false"/>
-								<then>
+								<equals arg1="${nodeModule.exist}" arg2="true"/>
+								<else>
 									<mkdir dir="${ext.adamstorefront.path}/web/webroot/_ui/addons/atom/share/node_modules"/>
-								</then>
+								</else>
 							</if>
-			
-			<copy todir="${ext.adamstorefront.path}/web/webroot/_ui/addons/atom/share/node_modules">
-					<fileset dir="${ext.atom.path}/acceleratoraddon/web/webroot/_ui/share/node_modules">
-			              <include name="*.js" />
-		           </fileset>
-				</copy>
+					
+			<available file="${ext.adamstorefront.path}/web/webroot/_ui/addons/atom/share/node_modules/gulp-util" property="gulpModule.exist" />   
+							<echo message="go to gulp copy"></echo>
+							<if>
+								<equals arg1="${gulpModule.exist}" arg2="true"/>
+
+								<else>
+									<copy todir="${ext.adamstorefront.path}/web/webroot/_ui/addons/atom/share/node_modules">
+										<fileset dir="${ext.atom.path}/acceleratoraddon/web/webroot/_ui/share/node_modules">
+								              <include name="**/*.*" />
+							           </fileset>
+									</copy>
+								</else>
+							</if> 
 		</sequential>
 	</macrodef>
 	
