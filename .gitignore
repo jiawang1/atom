@@ -50,7 +50,6 @@ hybris/*
 
 # DON'T TOUCH
 
-extensions/nemo/europe1novarto/lib/*
 
 
 
@@ -85,3 +84,5 @@ idea/hybristool.log*
 .project
 .settings/
 .springBeans
+**/acceleratoraddon/web/webroot/_ui/share/node_modules/*
+!**/acceleratoraddon/web/webroot/_ui/share/node_modules/gulp-cssimport/*
