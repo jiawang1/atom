@@ -1,5 +1,5 @@
 # atom
-first project for hybris, frontend resource optimization.
+this is a hybris addon, used to optimize front end static resources.
 this addon privodes following features:
 - support [LESS](http://lesscss.org/), both server side compile and online browser mode.
 - support online watch (fantastic for UX dev)
