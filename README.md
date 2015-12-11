@@ -17,18 +17,23 @@ this addon privodes following features:
   ``` 
 
 ##how to use
--relace storefront name 
-find variable ${ext.adamstorefront.path} in file buildcallbacks.xml which localted in root folder of prject atom, replace store front name "adamstorefront" to yours. ${ext.YOURSTOREFRONT.path}
-- add optimize tag
-find out javascipt.tag and styleSheet.tag under the right user experience folder (desktop, mobile, responsive) in your storefront. import tid and add optimize tag surround compress tag.
+
+#####relace storefront name 
+> find variable ${ext.adamstorefront.path} in file buildcallbacks.xml which localted in root folder of prject atom, replace store front name "adamstorefront" to yours. ${ext.*YOURSTOREFRONT*.path}
+
+#####add optimize tag
+>find out javascipt.tag and styleSheet.tag under the right user experience folder (desktop, mobile, responsive) in your storefront. import tid and add optimize tag surround compress tag.
+```html
 <%@ taglib prefix="opt" uri="http://com.atom.tag/optimize" %>
 	<opt:optimize urlpattern="${encodingAttributes}">
 		<compressible:css/>
 	</opt:optimize> 
-- download dependency 
- go into folder ${atom}/acceleratoraddon/web/webroot/_ui/share, run command:
+```	
+#####download dependency 
+>go into folder ${atom}/acceleratoraddon/web/webroot/_ui/share, run command:
+```sh  
   $npm install
- 
+``` 
 then everything ready.
 
 ## attention
