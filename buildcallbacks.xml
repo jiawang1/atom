@@ -73,7 +73,8 @@
 		 <macrodef name="atom_after_dist_copy"/>
  
 --><project name="atom_buildcallbacks">
-
+	
+	<property name="storefront.path" value="${ext.adamstorefront.path}"></property>
 	<macrodef name="generateconfig">
 		<sequential>
 			<uptodate property="updates" targetfile="${ext.atom.path}/project.properties" value="true">
@@ -102,7 +103,7 @@
 			<echo message="${development.mode}"></echo>
 			<generateconfig/>
 			<!-- temp solution-->
-			<copy todir="${ext.adamstorefront.path}/web/webroot/_ui/addons/atom/share">
+			<copy todir="${storefront.path}/web/webroot/_ui/addons/atom/share">
 				<fileset dir="${ext.atom.path}/acceleratoraddon/web/webroot/_ui/share">
 		              <include name="*.js" />
 					  <include name="./node_modules/*.js" />
@@ -110,21 +111,21 @@
 	           </fileset>
 			</copy>
 			
-			<available file="${ext.adamstorefront.path}/web/webroot/_ui/addons/atom/share/node_modules" type="dir" property="nodeModule.exist" />   
+			<available file="${storefront.path}/web/webroot/_ui/addons/atom/share/node_modules" type="dir" property="nodeModule.exist" />   
 							<if>
 								<equals arg1="${nodeModule.exist}" arg2="true"/>
 								<else>
-									<mkdir dir="${ext.adamstorefront.path}/web/webroot/_ui/addons/atom/share/node_modules"/>
+									<mkdir dir="${storefront.path}/web/webroot/_ui/addons/atom/share/node_modules"/>
 								</else>
 							</if>
 					
-			<available file="${ext.adamstorefront.path}/web/webroot/_ui/addons/atom/share/node_modules/gulp-util" property="gulpModule.exist" />   
+			<available file="${storefront.path}/web/webroot/_ui/addons/atom/share/node_modules/gulp-util" property="gulpModule.exist" />   
 							<echo message="go to gulp copy"></echo>
 							<if>
 								<equals arg1="${gulpModule.exist}" arg2="true"/>
 
 								<else>
-									<copy todir="${ext.adamstorefront.path}/web/webroot/_ui/addons/atom/share/node_modules">
+									<copy todir="${storefront.path}/web/webroot/_ui/addons/atom/share/node_modules">
 										<fileset dir="${ext.atom.path}/acceleratoraddon/web/webroot/_ui/share/node_modules">
 								              <include name="**/*.*" />
 							           </fileset>
@@ -138,7 +139,7 @@
 		<sequential>
 			<echo message="start gulp"></echo>
 			<exec executable="gulp" failonerror="true"> 
-					<arg line="default --gulpfile ${ext.adamstorefront.path}/web/webroot/_ui/addons/atom/share/gulpfile.js --cwd ${ext.adamstorefront.path}/web/webroot --devEnable ${development.mode}"/> 
+					<arg line="default --gulpfile ${storefront.path}/web/webroot/_ui/addons/atom/share/gulpfile.js --cwd ${storefront.path}/web/webroot --devEnable ${development.mode}"/> 
 			</exec>
 		</sequential>
 	</macrodef>

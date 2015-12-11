@@ -20,7 +20,6 @@ exports.extractJS = function(filePath, option) {
 				var oMap = {};
 				oMap.js = [];
 				oMap.minjs = [];
-				console.log("comme to then" + aMap.length);
 				for(var i = 0, j = aMap.length; i < j; i++){
 					if(aMap[i].lastIndexOf(".min.js") >= 0){
 						oMap.minjs.push(aMap[i]);

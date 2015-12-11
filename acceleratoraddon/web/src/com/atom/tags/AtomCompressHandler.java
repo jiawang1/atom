@@ -5,8 +5,11 @@ package com.atom.tags;
 
 import java.util.List;
 
+import org.jgroups.protocols.TP;
+
 import net.sf.cglib.core.CollectionUtils;
 
+import com.atom.constants.AtomConstants;
 import com.granule.parser.Attribute;
 import com.granule.parser.Element;
 import com.granule.parser.Tags;
@@ -38,13 +41,14 @@ public class AtomCompressHandler extends AbstractTagHandler
 		
 		List<Element> elist = getTagsFromString(body, Tags.LINK);;
 		String newBody = null;
-		
+		String suffix = (String)this.tp.getHttpRequest().getSession().getAttribute(AtomConstants.COMPRESS_FILE_SUFFIX);
+		suffix = suffix==null?"":suffix;
 		if(elist != null && elist.size() > 0){
-			newBody = generateBody(body,elist, "href", ".css", this.tp.getCssDestPath());
+			newBody = generateBody(body,elist, "href", "combind.min_" + suffix+ ".css", this.tp.getCssDestPath());
 		}else{
 			elist = getTagsFromString(body, Tags.SCRIPT);
 			if(elist != null && elist.size() > 0 ){
-				newBody = generateBody(body, elist, "src", ".js",this.tp.getJsDestPath());
+				newBody = generateBody(body, elist, "src", "combind.min_" + suffix+ ".js",this.tp.getJsDestPath());
 			}
 		}
 		newBody = newBody == null?body:newBody;
@@ -57,7 +61,7 @@ public class AtomCompressHandler extends AbstractTagHandler
 	}
 
 	
-	private String generateBody(String body, List<Element> els, String targetAttr, String format, String path){
+	private String generateBody(String body, List<Element> els, String targetAttr, String filename, String path){
 		StringBuilder sb = new StringBuilder();
 		int start = 0;
 		for(int i = 0; i < els.size(); i++){
@@ -68,7 +72,7 @@ public class AtomCompressHandler extends AbstractTagHandler
 				Attribute a = ele.getAttributes().get(targetAttr);
 				sb.append(body.substring(ele.getBegin(), a.getBegin()));
 				sb.append(targetAttr + "=\"");
-				sb.append(generateCombinedPath(path) + "combind.min" + format);
+				sb.append(generateCombinedPath(path) + filename);
 				sb.append("\" ");
 				sb.append(body.substring(a.getEnd(), ele.getEnd()));
 			}

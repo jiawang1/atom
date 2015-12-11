@@ -18,13 +18,11 @@ var aParam = [
 	{"key": "compressSourceFolder", "value": "atom.config.compress.sourceTag.folder"}
 ];
 
-var configPath = path.normalize("./_ui/addons/atom/share/config.properties");
-
-
 exports.generateConfigutation = function(oConfiguration){
 
 	var deferred = Q.defer();
-
+	var configPath = path.join( oConfiguration.currentPath + "/config.properties");
+	console.log("current config " + configPath);
 	var oLoader = new PropertiesLoader(configPath);
 
 /*  load configuration from properties file, prepare source for gulp task */

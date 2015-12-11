@@ -1,20 +1,22 @@
 var gulp = require('gulp');
-var fs = require("fs");
-
-var less = require('gulp-less'),
+ 	fs = require("fs"),
+	path = require("path"),
+	less = require('gulp-less'),
 	minifycss = require('gulp-minify-css'),
     uglify = require('gulp-uglify'),        
     concat = require('gulp-concat'),      
     merge = require('merge-stream'),
     cssimport = require("gulp-cssimport"),
-    rename = require('gulp-rename');        
-
-var compilor = require("./hybrisCompileLoader");
+    rename = require('gulp-rename'),       
+	compilor = require("./hybrisCompileLoader");
 
 var oConfiguration = (function(args){
 
 	var _o = {
-		devEnable: false 
+		devEnable: false,
+		webRoot:process.cwd(),
+		currentPath:__dirname,
+		fileSuffix: Date.now()
 	};
 	for(var i = 0, j= args.length; i < j; i++){
 		if(args[i] === "--devEnable"){
@@ -25,12 +27,6 @@ var oConfiguration = (function(args){
 	return _o;
 
 })(process.argv.slice(2));
-
-	gulp.task("build-less",function(){
-
-		gulp.src("./_ui/responsive/theme-blue/css/home.less").pipe(less()).pipe(gulp.dest("./_ui/responsive/theme-blue/css"));
-
-	});
 
 	gulp.task("prepare-config",function(cb){
 
@@ -70,7 +66,7 @@ var oConfiguration = (function(args){
 
 				gulp.src(oConfiguration.aCSSMap)
 				.pipe(cssimport(__oprions))
-				.pipe(concat("combind.min.css"))
+				.pipe(concat("combind.min_"+ oConfiguration.fileSuffix + ".css"))
 				.pipe(minifycss())
 				.pipe(gulp.dest(oConfiguration.combindCSSDest));
 				cb();
@@ -87,7 +83,7 @@ var oConfiguration = (function(args){
 					try{
 						fs.accessSync(oConfiguration.combindJSDest, fs.W_OK);
 						merge(gulp.src(oConfiguration.oJSMap.minjs), minifyjs(oConfiguration.oJSMap.js))
-						.pipe(concat("combind.min.js"))
+						.pipe(concat("combind.min_"+ oConfiguration.fileSuffix + ".js"))
 						.pipe(gulp.dest(oConfiguration.combindJSDest));
 						cb();
 					}catch(err){
@@ -106,7 +102,19 @@ var oConfiguration = (function(args){
 	});
 
 	gulp.task("default",["compress-css", "compress-js"], function(cb){
-		cb();
+
+		var _fileName = path.join(oConfiguration.webRoot +"/WEB-INF/tags/shared/variables/generateCompressName.jsp");
+
+		var _fContent = "<%@ taglib prefix=\"c\" uri=\"http://java.sun.com/jsp/jstl/core\"%>\n <c:set var=\"compressFileSuffix\" scope=\"session\" value=\""+ oConfiguration.fileSuffix + "\"/>";
+
+		fs.writeFile(_fileName, _fContent ,'utf8',function(err){
+
+				console.log("generate file finish");
+				cb(err);
+		});
+
+
+		
 	});
 
 //default --gulpfile ./_ui/addons/atom/share/gulpfile.js --cwd . --devEnable true
