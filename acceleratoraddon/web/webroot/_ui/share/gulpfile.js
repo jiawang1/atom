@@ -6,8 +6,7 @@ var gulp = require('gulp');
     uglify = require('gulp-uglify'),        
     concat = require('gulp-concat'),      
     merge = require('merge-stream'),
-    cssimport = require("gulp-cssimport"),
-    rename = require('gulp-rename'),       
+    cssimport = require("gulp-cssimport"),    
 	compilor = require("./hybrisCompileLoader");
 
 var oConfiguration = (function(args){

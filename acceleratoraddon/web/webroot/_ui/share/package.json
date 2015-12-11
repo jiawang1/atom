@@ -3,8 +3,15 @@
   "version": "0.0.1",
   "description": "optimize hybris static resources",
   "main": "gulpfile.js",
-  "scripts": {
-    "test": "cd test && node index.js"
+   "keywords": [
+    "hybris",
+    "css",
+    "js",
+    "compress"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jiawang1/atom.git"
   },
   "dependencies": {
     "phpfn": "^1.0.0",
@@ -13,7 +20,13 @@
     "gulp-util": "2.2.X",
     "http-https": "^1.0.0",
     "minimatch": "^2.0.8",
-    "through2": "0.4.X"
+    "through2": "0.4.X",
+    "q": "^1.4.1",
+    "gulp-minify-css":"^1.2.1",
+    "gulp-uglify":"^1.5.1",
+    "gulp-concat":"^2.6.0",
+    "gulp-less":"^3.0.5",
+    "merge-stream":"^1.0.0"
   },
-  "license": "MIT"
+  "license": "GPL"
 }
