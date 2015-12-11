@@ -11,7 +11,10 @@ this addon privodes following features:
 - dowload this project and follow hybris addon installation rules to add this to your hybris storefront. 
 - nodejs is prerequite, you can download it [here](http://www.generalichina.com/)
 - install gulp globally - you can run following command to achieve this:
-  $ npm install --global gulp
+
+  ```sh
+   $ npm install --global gulp
+  ``` 
 
 ##how to use
 -relace storefront name 
