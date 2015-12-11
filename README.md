@@ -19,7 +19,7 @@ this addon privodes following features:
 ##how to use
 
 #####relace storefront name 
- find variable ${ext.adamstorefront.path} in file buildcallbacks.xml which localted in root folder of prject atom, replace store front name "adamstorefront" to yours. ${ext.*YOURSTOREFRONT*.path}
+ find variable ${ext.adamstorefront.path} in file buildcallbacks.xml which localted in root folder of prject atom, replace store front name "adamstorefront" to yours. ${ext.**YOURSTOREFRONT**.path}
 
 #####add optimize tag
 find out javascipt.tag and styleSheet.tag under the right user experience folder (desktop, mobile, responsive) in your storefront. import tid and add optimize tag surround compress tag.
