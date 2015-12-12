@@ -6,7 +6,8 @@ var gulp = require('gulp');
     uglify = require('gulp-uglify'),        
     concat = require('gulp-concat'),      
     merge = require('merge-stream'),
-    cssimport = require("gulp-cssimport"),    
+    cssimport = require("gulp-cssimport"), 
+    sourcemaps = require('gulp-sourcemaps'),   
 	compilor = require("./hybrisCompileLoader");
 
 var oConfiguration = (function(args){
@@ -40,13 +41,14 @@ var oConfiguration = (function(args){
 	gulp.task("compile-less",["prepare-config"], function(cb){
 
 		var __destFolder = oConfiguration.lessDestFolder;
-		if(oConfiguration.enableLess){
+		if(oConfiguration.enableLess === "true"){
 			if(!oConfiguration.devEnable || oConfiguration.enableCompress ){
-				for(var i = 0, j = oConfiguration.lessSourceFile.length; i < j ; i++){
-					gulp.src(oConfiguration.lessSourceFile[i])
+					gulp.src(oConfiguration.lessSourceFile)
+						.pipe(sourcemaps.init())
 						.pipe(less())
+						.pipe(sourcemaps.write("."))
     					.pipe(gulp.dest(__destFolder || oConfiguration.lessSourceFile[i].substring(0, oConfiguration.lessSourceFile[i].length - 6) ));
-				}
+				
 				cb();
 			}
 		}else{
@@ -55,7 +57,7 @@ var oConfiguration = (function(args){
 	});
 
 	gulp.task("compress-css",['compile-less'], function(cb){
-			if(oConfiguration.enableCompress){
+			if(oConfiguration.enableCompress === "true"){
 				var __oprions = oConfiguration.buildProxyHost?{
 					"httpRequestOptions":{
 						"host":oConfiguration.buildProxyHost,
@@ -65,8 +67,10 @@ var oConfiguration = (function(args){
 
 				gulp.src(oConfiguration.aCSSMap)
 				.pipe(cssimport(__oprions))
+				.pipe(sourcemaps.init())
 				.pipe(concat("combind.min_"+ oConfiguration.fileSuffix + ".css"))
 				.pipe(minifycss())
+				.pipe(sourcemaps.write("."))
 				.pipe(gulp.dest(oConfiguration.combindCSSDest));
 				cb();
 
@@ -76,7 +80,7 @@ var oConfiguration = (function(args){
 	});
 
 	gulp.task("compress-js", ["prepare-config"],function(cb){
-			if(oConfiguration.enableCompress){
+			if(oConfiguration.enableCompress === "true"){
 
 				if(oConfiguration.combindJSDest){
 					try{
