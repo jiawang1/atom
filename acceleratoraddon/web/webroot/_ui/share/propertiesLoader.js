@@ -56,14 +56,15 @@ PropertiesLoader.prototype.loadFile = function(cb){
 
 	};		
 
-	PropertiesLoader.prototype.findPropertyValue = function(target, property){
+	PropertiesLoader.prototype.findPropertyValue = function(target, property, seperator){
 
 			var _startInx = target.length - 1;
 			var compressInx = findPosition(_startInx, target, property);
 			var _endInx = target.indexOf("\n", compressInx);
 			var _aValues = target.slice(compressInx,_endInx).split("=");
 				if(_aValues.length > 0 &&_aValues[1] !== undefined){
-				return _aValues[1].replace(/\r$/,"");
+					var _rawStr = _aValues[1].replace(/\r$/,"").trim();
+					return seperator?_rawStr.split(seperator):_rawStr;
 			}
 
 			function findPosition(index, target, pattern){

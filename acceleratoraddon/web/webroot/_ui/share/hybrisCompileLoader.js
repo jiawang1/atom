@@ -15,6 +15,9 @@ var aParam = [
 	{"key": "combindCSSDest", "value": "atom.config.compress.css.dest.filePath"},
 	{"key": "buildProxyHost", "value": "atom.config.build.env.proxy.host"},
 	{"key": "buildProxyPort", "value": "atom.config.build.env.proxy.port"},
+	{"key": "enableHint", "value": "atom.config.jshint.enable"},
+	{"key": "enableHintExtract", "value": "atom.config.jshint.extract.enable"},
+	{"key": "hintExtractFolders", "value": "atom.config.jshint.extract.folder","seperator":","},
 	{"key": "compressSourceFolder", "value": "atom.config.compress.sourceTag.folder"}
 ];
 
@@ -32,9 +35,19 @@ exports.generateConfigutation = function(oConfiguration){
  		}
 
  		for(var i = 0, j = aParam.length; i < j; i++){
- 			var _value = oLoader.findPropertyValue(sConfigFile, aParam[i].value).trim();
-			oConfiguration[aParam[i].key] = path.isAbsolute(_value)?toRelativePath(_value):_value;
+ 			var _value = oLoader.findPropertyValue(sConfigFile, aParam[i].value, aParam[i].seperator);
+			oConfiguration[aParam[i].key] = prepareParam(_value);
 
+ 		}
+
+ 		function prepareParam(param){
+ 			if(typeof _value !== "string"){
+ 				return _value.map(function(value){
+ 					return path.isAbsolute(value)?toRelativePath(value):value;
+ 				});
+ 			}else{
+ 				return path.isAbsolute(param)?toRelativePath(param):param;
+ 			}
  		}
 		/* 
 			deal with LESS 
