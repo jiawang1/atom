@@ -39,16 +39,39 @@ public class AtomCompressHandler extends AbstractTagHandler
 	public String process(String body) throws Exception
 	{
 		
-		List<Element> elist = getTagsFromString(body, Tags.LINK);;
+		StringBuilder _newBody = new StringBuilder();
+		StringBuilder _commentBody = new StringBuilder();
+		
+		int _cursor = 0;
+		int _from = -1;
+		int _to = -1;
+		do{
+			_from = body.indexOf("<!--[if",_cursor);
+			if(_from >= 0){
+				_newBody.append(body.substring(_cursor, _from));
+				_to = body.indexOf("endif]-->", _from) + "endif]-->".length();
+				_commentBody.append(body.substring(_from, _to));
+				_cursor = _to;
+			}else{
+				if(_cursor > 0){
+					_newBody.append(body.substring(_cursor));
+				}
+			}
+		}while(_from >= 0);
+		body = _newBody.length() > 0? _newBody.toString():body; 
+		
+		List<Element> elist = getTagsFromString(body, Tags.LINK);
 		String newBody = null;
+		
+		
 		String suffix = (String)this.tp.getHttpRequest().getSession().getAttribute(AtomConstants.COMPRESS_FILE_SUFFIX);
 		suffix = suffix==null?"":suffix;
 		if(elist != null && elist.size() > 0){
-			newBody = generateBody(body,elist, "href", "combind.min_" + suffix+ ".css", this.tp.getCssDestPath());
+			newBody = generateBody(body,elist, "href", "combind.min_" + suffix+ ".css", this.tp.getCssDestPath(), _commentBody);
 		}else{
 			elist = getTagsFromString(body, Tags.SCRIPT);
 			if(elist != null && elist.size() > 0 ){
-				newBody = generateBody(body, elist, "src", "combind.min_" + suffix+ ".js",this.tp.getJsDestPath());
+				newBody = generateBody(body, elist, "src", "combind.min_" + suffix+ ".js",this.tp.getJsDestPath(),_commentBody);
 			}
 		}
 		newBody = newBody == null?body:newBody;
@@ -61,20 +84,29 @@ public class AtomCompressHandler extends AbstractTagHandler
 	}
 
 	
-	private String generateBody(String body, List<Element> els, String targetAttr, String filename, String path){
+	private String generateBody(String body, List<Element> els, String targetAttr, String filename, String path, StringBuilder comments){
 		StringBuilder sb = new StringBuilder();
+		StringBuilder compressTagbuffer = new StringBuilder();
 		int start = 0;
 		for(int i = 0; i < els.size(); i++){
 			Element ele = els.get(i);
-			sb.append(body.substring(start, ele.getBegin()));
 			
-			if(i == els.size() - 1){
+			if(isCodedElement(ele)){
+				sb.append(body.substring(start, ele.getEnd()));
+			}else if (compressTagbuffer.length() == 0){
 				Attribute a = ele.getAttributes().get(targetAttr);
-				sb.append(body.substring(ele.getBegin(), a.getBegin()));
-				sb.append(targetAttr + "=\"");
-				sb.append(generateCombinedPath(path) + filename);
-				sb.append("\" ");
-				sb.append(body.substring(a.getEnd(), ele.getEnd()));
+				compressTagbuffer.append(body.substring(ele.getBegin(), a.getBegin()));
+				compressTagbuffer.append(targetAttr + "=\"");
+				compressTagbuffer.append(path + filename);
+				compressTagbuffer.append("\" ");
+				compressTagbuffer.append(body.substring(a.getEnd(), ele.getEnd()));
+			}
+
+			if(i == els.size() - 1){
+				if(comments.length() > 0){
+					sb.append(comments);
+				}
+				sb.append(compressTagbuffer);
 			}
 			start = ele.getEnd();
 		}
@@ -82,11 +114,8 @@ public class AtomCompressHandler extends AbstractTagHandler
 		return sb.toString();
 	}
 	
-	private String generateCombinedPath(String path){
-		
-		if(path.startsWith(".")){
-			return path.substring(path.indexOf("/"));
-		}
-		return path;
+	private boolean isCodedElement(Element ele ){
+		return ele.getContentAsString().trim().length() > 0;
 	}
+	
 }

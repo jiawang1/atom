@@ -34,10 +34,7 @@ public class OptimizeTag extends AcceleratorCompressTag
 	private static final String BASEPATH = null;
 	private String urlpattern = null;
 	
-	
-	
-	
-	
+
 	@Override
 	public int doAfterBody() throws JspTagException{
 		
@@ -46,34 +43,9 @@ public class OptimizeTag extends AcceleratorCompressTag
 		final BodyContent bodyContent = getBodyContent();
 		final String oldBody = bodyContent.getString();
 		bodyContent.clearBody();
-		try
-		{
-			getPreviousOut().print(httpRequest.getContextPath());
-			pageContext.include("/WEB-INF/tags/shared/variables/test.tag");
-			
-			Object attribute = httpRequest.getSession().getAttribute("test");
-			
-			
-//			pageContext.include("/WEB-INF/tags/shared/variables/test.tag");
-		}
-		catch (Exception e)
-		{
-			try
-			{	
-				
-				getPreviousOut().print(e);
-			}
-			catch ( Exception ex)
-			{
-				
-			}
-		}
-		
-		
 		
 		TagOptions tp = new TagOptions();
 		tp.setBasePath(BASEPATH);
-		tp.setGenerateName("combind.min");
 		tp.setHttpRequest(httpRequest);
 		tp.setID(ID);
 		tp.setMethod(METHOD);
@@ -90,7 +62,6 @@ public class OptimizeTag extends AcceleratorCompressTag
 				throw new JspTagException(e);
 			}
 			
-		
 		return SKIP_BODY;
 	}
 	

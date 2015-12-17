@@ -16,6 +16,7 @@ import com.granule.parser.Tags;
  * @author i054410
  * 
  */
+@Deprecated
 public class GranuleCompressHandler extends AbstractTagHandler
 {
 	

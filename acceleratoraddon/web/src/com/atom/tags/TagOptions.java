@@ -17,7 +17,6 @@ public class TagOptions
 	private   String basePath = null;
 	private String urlpattern = null;
 	private HttpServletRequest httpRequest = null;
-	private String generateName = null;
 	private String jsDestPath = null;
 	private String cssDestPath = null;
 	private boolean onlineLess = false;
@@ -104,20 +103,6 @@ public class TagOptions
 	public void setHttpRequest(HttpServletRequest httpRequest)
 	{
 		this.httpRequest = httpRequest;
-	}
-	/**
-	 * @return the generateTime
-	 */
-	public String getGenerateName()
-	{
-		return generateName;
-	}
-	/**
-	 * @param generateTime the generateTime to set
-	 */
-	public void setGenerateName(String generateTime)
-	{
-		this.generateName = generateTime;
 	}
 
 	public String getJsDestPath(){

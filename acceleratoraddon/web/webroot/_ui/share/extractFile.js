@@ -35,6 +35,7 @@ exports.extractJS = function(filePath, option) {
 function extractFile(filePath, pattern, extName){
 	var javaCommentCount = 0,
 		htmlCommentCount = 0,
+		ieConditionComment = 0,
 		deferred = Q.defer();
 
 	deferred.number = extName;
@@ -51,7 +52,16 @@ function extractFile(filePath, pattern, extName){
 			return;
 		}
 
-		var __commentsFinish = false;
+		var __commentFinishLine = false;
+
+		if(line.search(/^(?=.*<!--\[if)(?!.*\[endif\]-->)/) >= 0){
+			ieConditionComment++;
+		}
+
+		if(line.search(/^(?!.*<!--\[if)(?=.*\[endif\]-->)/) >= 0){
+			ieConditionComment--;
+			__commentFinishLine = true;
+		}
 
 		if(line.search(/^<%--.*--%>$|^<!--.*-->$/) >= 0){
 			return;
@@ -70,16 +80,16 @@ function extractFile(filePath, pattern, extName){
 		if(line.search(/^(?!.*<!--)(?=.*-->)/) >= 0){
 			// if(line.search(/^<!--.*/) < 0 && line.search(/-->/) >= 0){
 			htmlCommentCount--;
-			__commentsFinish = true;
+			__commentFinishLine = true;
 		}
 
 		if(line.search(/^(?!.*<%--)(?=.*--%>)/) >= 0){
 			// if(line.search(/^<%--.*/) < 0 && line.search(/--%>/) >= 0){
 			javaCommentCount--;	
-			__commentsFinish = true;		
+			__commentFinishLine = true;		
 		}
 
-		if(htmlCommentCount + javaCommentCount > 0 || __commentsFinish){  				 // comments part
+		if(htmlCommentCount + javaCommentCount + ieConditionComment > 0 || __commentFinishLine){  				 // comments part
 			return;
 		}
 		
