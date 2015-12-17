@@ -5,6 +5,7 @@ this addon privodes following features:
 - support online watch (fantastic for UX dev)
 - compress css, js file via gulp
 - generate different version of combined file 
+- scan and generate quality report for javascript 
 
 ##installation
 
@@ -22,12 +23,17 @@ this addon privodes following features:
  find variable ${ext.adamstorefront.path} in file buildcallbacks.xml which localted in root folder of prject atom, replace store front name "adamstorefront" to yours. ${ext.**YOURSTOREFRONT**.path}
 
 #####2.add optimize tag
-find out javascipt.tag and styleSheet.tag under the right user experience folder (desktop, mobile, responsive) in your storefront. import tid and add optimize tag surround compress tag.
+find out javascipt.tag and styleSheet.tag under the right user experience folder (desktop, mobile, responsive) in your storefront. import tld and add optimize tag surround compress tag(javascript.tag and stylesheet.tag).
 ```html
 <%@ taglib prefix="opt" uri="http://com.atom.tag/optimize" %>
+
 	<opt:optimize urlpattern="${encodingAttributes}">
 		<compressible:css/>
 	</opt:optimize> 
+
+    <opt:optimize urlpattern="${encodingAttributes}">
+        <compressible:js/>
+    </opt:optimize>
 ```	
 #####3.download dependency 
 go into folder ${atom}/acceleratoraddon/web/webroot/_ui/share, run command:

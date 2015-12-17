@@ -56,9 +56,7 @@
                                 
     "undef"         : true,     
     "unused"        : "strict",     
-                                
-                                
-                                
+                                                                                             
     "strict"        : false,     
     "maxparams"     : false,    
     "maxdepth"      : false,    
@@ -67,7 +65,6 @@
     "maxlen"        : false,    
     "varstmt"       : false,    
 
-    
     "asi"           : false,     
     "boss"          : false,     
     "debug"         : false,     
