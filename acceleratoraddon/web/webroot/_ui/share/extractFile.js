@@ -7,7 +7,6 @@ var Q = require('q');
 exports.extractCSS = function(filePath, option){
 	/** ignore media type */
 	return extractFile(filePath, new RegExp(/^<link.*(href=["|'].*["|'])/i), new RegExp(/css|less/)).then(function(aMap){
-		console.log("css return value " + Object.prototype.toString.call(aMap));
 		return  aMap.map(function(item){
 			return item.replace(/.less/, ".css");
 		});
@@ -104,6 +103,11 @@ function extractFile(filePath, pattern, extName){
 			}
 		}
 
+	});
+
+	rStream.on("error",function(err){
+		console.log("come to error" + err);
+		deferred.reject(err);
 	});
 	
 	rStream.on("close", function(){

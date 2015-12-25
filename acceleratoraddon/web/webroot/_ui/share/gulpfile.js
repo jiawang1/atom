@@ -1,5 +1,5 @@
-var gulp = require('gulp');
-fs = require("fs"),
+var gulp = require('gulp'),
+	fs = require("fs"),
 	path = require("path"),
 	less = require('gulp-less'),
 	minifycss = require('gulp-minify-css'),
@@ -7,6 +7,7 @@ fs = require("fs"),
 	concat = require('gulp-concat'),
 	merge = require('merge-stream'),
 	jshint = require('gulp-jshint'),
+	Q = require('q'),
 	cssimport = require("gulp-cssimport"),
 	sourcemaps = require('gulp-sourcemaps'),
 	compilor = require("./hybrisCompileLoader");
@@ -20,23 +21,30 @@ var oConfiguration = (function(args) {
 		fileSuffix: Date.now()
 	};
 	for (var i = 0, j = args.length; i < j; i++) {
-		if (args[i] === "--devEnable") {
-			_o.devEnable = !!args[i + 1];
-			return _o;
+		if(args[i].search(/^--.*/) >= 0){
+			_o[args[i].substring(2)] = args[i + 1];
+			console.info(args[i].substring(2) + " value is " + _o[args[i].substring(2)]);
+			i++;
 		}
 	}
 	return _o;
 
-})(process.argv.slice(2));
+})(process.argv.slice(7));
+
 
 gulp.task("prepare-config", function(cb) {
 
-	compilor.generateConfigutation(oConfiguration).then(function(data) {
-		oConfiguration = data;
-		cb();
-	}, function(err) {
-		cb(err);
-	});
+	Q.all([compilor.generateConfigutation(oConfiguration), compilor.generateAddonResources(oConfiguration)]).then(
+		function(aData){
+			oConfiguration = aData[0];
+			oConfiguration.aCSSMap = oConfiguration.aCSSMap.concat(aData[1].cssMap);
+			oConfiguration.oJSMap.js = oConfiguration.oJSMap.js.concat(aData[1].jsMap);
+			cb();
+		},
+		function(err){
+			console.log(err);
+			cb(err);}
+		);
 });
 
 
@@ -142,6 +150,7 @@ gulp.task("default", ["compress-css", "js-lint", "compress-js"], function(cb) {
 	var _fileName = path.join(oConfiguration.webRoot + "/WEB-INF/tags/shared/variables/generateCompressName.jsp");
 	var _fContent = "<%@ taglib prefix=\"c\" uri=\"http://java.sun.com/jsp/jstl/core\"%>\n <c:set var=\"compressFileSuffix\" scope=\"session\" value=\"" + oConfiguration.fileSuffix + "\"/>";
 	fs.writeFile(_fileName, _fContent, 'utf8', function(err) {
+
 		console.log("generate file finish");
 		cb(err);
 	});

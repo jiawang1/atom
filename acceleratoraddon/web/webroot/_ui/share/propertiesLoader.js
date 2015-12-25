@@ -1,7 +1,6 @@
 var fs = require("fs");
 var path = require("path");
-
-var count = 0;
+var Q = require('q');
 
 var PropertiesLoader = function(file){
 
@@ -10,33 +9,32 @@ var PropertiesLoader = function(file){
 
 };
 
-PropertiesLoader.prototype.loadFile = function(cb){
+PropertiesLoader.prototype.loadFile = function(){
 
-	var rs = fs.createReadStream(this.file);
 	var _length = 0;
 	var chunks = [];
-	var that = this;
+	var deferred = Q.defer();
+	var rs = fs.createReadStream(this.file);
 
 	rs.on("open", function(fd){
-		console.log("start to read file: " +  that.file);
-	});
+		console.log("start to read file: " +  this.file);
+	}.bind(this));
 
 	rs.on("data", function(data){
+		console.log("get data for: " +  this.file);
 		chunks.push(data);
 		_length = _length + data.length;
-		// console.log("read count: " + count++);
 
-	});
+	}.bind(this));
 
 	rs.on("end", function(){
-		console.log("file read end");
+		console.log("file read end for " + this.file);
 		var chunk, position = 0;
 		var _buffer = new Buffer(_length);
 
 		for(var i = 0, j = chunks.length; i < j; i++){
 
 			chunk = chunks[i];
-			// console.log("typeis : " + Object.prototype.toString.call(chunk));
 			if(!Buffer.isBuffer(chunks[i])){
 				chunk = new Buffer(chunks[i]);
 			}
@@ -44,37 +42,44 @@ PropertiesLoader.prototype.loadFile = function(cb){
 			position += chunk.length;
 
 		}
-		 cb(null,_buffer.toString());
-		// console.log(configuration);
-	});
+		deferred.resolve(_buffer.toString());
+	}.bind(this));
 
 	rs.on("error", function(err){
-		console.log("read file " + that.file + " failed");
-		console.log(err);
-		cb(err);
-	});
-
+		console.log("read file " + this.file + " failed : " + err);
+		deferred.reject(err);
+	}.bind(this));
+	  
+	  return deferred.promise;	
 	};		
 
-	PropertiesLoader.prototype.findPropertyValue = function(target, property, seperator){
+PropertiesLoader.prototype.findPropertyValue = function(target, property, seperator){
+			
+			return findPosition(target.length -1, target, property);
 
-			var _startInx = target.length - 1;
-			var compressInx = findPosition(_startInx, target, property);
-			var _endInx = target.indexOf("\n", compressInx);
-			var _aValues = target.slice(compressInx,_endInx).split("=");
+			function findPosition(index, target, prop){
+				var _inx = -1;
+				_inx = target.lastIndexOf(prop, index);
+				if(_inx < 0){
+					return "";
+				}
+
+				if(target.charAt(_inx - 1 ) === "#"){    // comments
+					return findPosition(_inx -1 ,target,prop);
+				}
+				
+				var _endInx = target.indexOf("\n", _inx);
+				var _aValues = target.slice(_inx,_endInx).split("=");
+				if(_aValues[0] !== prop){						// longer properties than whaat we find
+					return findPosition(_inx -1 ,target,prop);
+				}
+
 				if(_aValues.length > 0 &&_aValues[1] !== undefined){
 					var _rawStr = _aValues[1].replace(/\r$/,"").trim();
 					return seperator?_rawStr.split(seperator):_rawStr;
-			}
-
-			function findPosition(index, target, pattern){
-
-				var _inx = 0;
-				_inx = target.lastIndexOf(pattern, index);
-				if(_inx > 0 && target.charAt(_inx - 1 ) === "#"){
-					findPosition(_inx,target,pattern );
 				}
-				return _inx;
+
+				return "";
 			}
 	};					
 

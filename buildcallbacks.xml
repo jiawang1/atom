@@ -11,7 +11,8 @@
  license agreement you entered into with hybris.
 
   
---><!--
+-->
+<!--
  All hybris buildcallbacks.xml macrodefinitions:
  
  Build/Documentation
@@ -72,9 +73,26 @@
 		 <macrodef name="atom_before_dist_copy"/>
 		 <macrodef name="atom_after_dist_copy"/>
  
---><project name="atom_buildcallbacks">
-	
-	<property name="storefront.path" value="${ext.adamstorefront.path}"></property>
+-->
+<project name="atom_buildcallbacks">
+
+	<property name="storefront.path" value="${ext.adamstorefront.path}">
+	</property>
+	<macrodef name="generateAddonPath">
+		<sequential>
+			<var name="addPath" value="">
+			</var>
+			<for list="b2ccheckoutaddon" param="letter">
+				<sequential>
+					<var name="addPath" value="${addPath},@{letter}:${ext.@{letter}.path}">
+					</var>
+					
+				</sequential>
+			</for>
+			<property name="addonPath" value="${addPath}">
+			</property>
+		</sequential>
+	</macrodef>
 	<macrodef name="generateconfig">
 		<sequential>
 			<uptodate property="updates" targetfile="${ext.atom.path}/project.properties" value="true">
@@ -86,62 +104,63 @@
 					<concat destfile="${ext.atom.path}/acceleratoraddon/web/webroot/_ui/share/config.properties" overwrite="yes">
 						<filelist dir="${ext.atom.path}" files="project.properties"/>
 					</concat>
-					
+
 					<replaceregexp byline="true">
 						<regexp pattern="^((?!atom.config.).)*"/>
-						  <substitution expression=""/>
+						<substitution expression=""/>
 						<fileset dir="${ext.atom.path}/acceleratoraddon/web/webroot/_ui/share/" includes="**/*.properties"/>
 					</replaceregexp>
 				</then>
 			</if>
-		</sequential>	
+		</sequential>
 	</macrodef>
-	
+
 	<macrodef name="atom_before_build">
 		<sequential>
-			<echo message="start front end file generation"></echo>
-			<echo message="${development.mode}"></echo>
+			<echo message="start front end file generation">
+			</echo>
+			<generateAddonPath/>
 			<generateconfig/>
 			<!-- temp solution-->
 			<copy todir="${storefront.path}/web/webroot/_ui/addons/atom/share">
 				<fileset dir="${ext.atom.path}/acceleratoraddon/web/webroot/_ui/share">
-		              <include name="*.js" />
-					  <include name="./node_modules/*.js" />
-		              <include name="*.properties" />   
-	           </fileset>
+					<include name="*.js" />
+					<include name="./node_modules/*.js" />
+					<include name="*.properties" />
+				</fileset>
 			</copy>
-			
-			<available file="${storefront.path}/web/webroot/_ui/addons/atom/share/node_modules" type="dir" property="nodeModule.exist" />   
-							<if>
-								<equals arg1="${nodeModule.exist}" arg2="true"/>
-								<else>
-									<mkdir dir="${storefront.path}/web/webroot/_ui/addons/atom/share/node_modules"/>
-								</else>
-							</if>
-					
-			<available file="${storefront.path}/web/webroot/_ui/addons/atom/share/node_modules/gulp-util" property="gulpModule.exist" />   
-							<echo message="go to gulp copy"></echo>
-							<if>
-								<equals arg1="${gulpModule.exist}" arg2="true"/>
 
-								<else>
-									<copy todir="${storefront.path}/web/webroot/_ui/addons/atom/share/node_modules">
-										<fileset dir="${ext.atom.path}/acceleratoraddon/web/webroot/_ui/share/node_modules">
-								              <include name="**/*.*" />
-							           </fileset>
-									</copy>
-								</else>
-							</if> 
+			<available file="${storefront.path}/web/webroot/_ui/addons/atom/share/node_modules" type="dir" property="nodeModule.exist" />
+			<if>
+				<equals arg1="${nodeModule.exist}" arg2="true"/>
+				<else>
+					<mkdir dir="${storefront.path}/web/webroot/_ui/addons/atom/share/node_modules"/>
+				</else>
+			</if>
+
+			<available file="${storefront.path}/web/webroot/_ui/addons/atom/share/node_modules/gulp-util" property="gulpModule.exist" />
+			<echo message="go to gulp copy"></echo>
+			<if>
+				<equals arg1="${gulpModule.exist}" arg2="true"/>
+				<else>
+					<copy todir="${storefront.path}/web/webroot/_ui/addons/atom/share/node_modules">
+						<fileset dir="${ext.atom.path}/acceleratoraddon/web/webroot/_ui/share/node_modules">
+							<include name="**/*.*" />
+						</fileset>
+					</copy>
+				</else>
+			</if>
 		</sequential>
 	</macrodef>
-	
+
 	<macrodef name="atom_after_build">
 		<sequential>
-			<echo message="start gulp"></echo>
-			<exec executable="gulp" failonerror="true"> 
-					<arg line="default --gulpfile ${storefront.path}/web/webroot/_ui/addons/atom/share/gulpfile.js --cwd ${storefront.path}/web/webroot --devEnable ${development.mode}"/> 
+			<echo message="start gulp">
+			</echo>
+			<exec executable="gulp" failonerror="true">
+				<arg line="default --gulpfile ${storefront.path}/web/webroot/_ui/addons/atom/share/gulpfile.js --cwd ${storefront.path}/web/webroot --devEnable ${development.mode} --addonPath ${addonPath} --userExperience ${commerceservices.default.desktop.ui.experience}"/>
 			</exec>
 		</sequential>
 	</macrodef>
-		
+
 </project>
