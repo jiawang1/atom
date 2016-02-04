@@ -19,6 +19,7 @@ this addon privodes following features:
 >-add this addon in localextentions.xml file
 >-add this addon in extensioninfo.xml in your storefront
 >-change storefront name in atom's project.properties file
+
 - if you have other addon to supply UX related resources, please main these addons in buildcalbacks.xml file:
 ```code
       <for list="addon1,addon2,addon3" param="letter">
