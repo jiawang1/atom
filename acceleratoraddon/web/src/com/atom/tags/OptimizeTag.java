@@ -11,22 +11,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.tagext.BodyContent;
 import javax.servlet.jsp.tagext.BodyTagSupport;
+import com.granule.CompressTag;
 
 import com.atom.constants.AtomConstants;
 import com.atom.tags.AbstractTagHandler;
 import com.atom.tags.TagOptions;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.granule.CompressorSettings;
-import com.granule.parser.Element;
-import com.granule.parser.TagReader;
-import com.sap.adam.storefront.tags.AcceleratorCompressTag;
 import com.atom.httpwrapper.RemoveEncodingRequestWrapper;
 
 /**
  * @author i054410
  * 
  */
-public class OptimizeTag extends AcceleratorCompressTag
+public class OptimizeTag extends CompressTag
 {	
 	private static final String METHOD = null;
 	private static final String ID = null;

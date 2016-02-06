@@ -17,6 +17,54 @@
 
 atom.key=value
 
+###########################################################################################
+#
+# following part used to configure static resources related optimization  
+# rules should be noticed: 
+# 	all the attributes with name XXXX.folder will be consumed by gulp 
+# 	and with name XXX.filePath with consumed by java (or both with gulp)
+# 	XXXX.folder: should relative path and root is webroot folder in storefront     
+# 	XXX.filePath: should related to HTTP context Path (or webroot folder)  
+#	seperator for attributes value should be ','           
+#
+#################################start of atom related configuration##########################################################
+atom.config.LESS.enabled=true
+# LESS file folder , consumed by gulp    
+atom.config.LESS.source.folder=./_ui/responsive/theme-blue/css/
+atom.config.LESS.dest.folder=./_ui/responsive/theme-blue/css/
+
+atom.config.compress.enabled=true
+
+# folder for css.tag and js.tag, gulp will try to find these files and compress whatever in them 
+atom.config.compress.sourceTag.folder=./WEB-INF/tags/responsive/template/compressible/
+
+# final dest folder for compress result , combind.min.js/css will be placed in this folder, consumed by both gulp and JSP
+atom.config.compress.js.dest.filePath=./_ui/responsive/common/js/
+atom.config.compress.css.dest.filePath=./_ui/responsive/theme-blue/css/
+
+# where to find js/css files, consumed by gulp, this path will be replaced with relative path variable in tag file since js can not resolve java variable in tag 
+atom.config.js.root.folder=./_ui/responsive/common/
+atom.config.css.root.folder=./_ui/responsive/theme-blue/
+
+# http/https proxy which used to get resources from internet when during build phase
+atom.config.build.env.proxy.host=proxy.pal.sap.corp
+atom.config.build.env.proxy.port=8080
+
+# add-ons with static resources should be compressed
+atom.config.addon=b2ccheckoutaddon,liveeditaddon
+
+# jshint related configuration  
+atom.config.jshint.enable=true
+
+# lint js in side JSP file
+atom.config.jshint.extract.enable=true
+atom.config.jshint.extract.folder=./WEB-INF/views/responsive/pages/*.jsp
+
+
+
+
+#######################################end of atom related configuration####################################################
+
 # Specifies the location of the spring context file added automatically to the global platform application context.
 atom.application-context=atom-spring.xml
 
