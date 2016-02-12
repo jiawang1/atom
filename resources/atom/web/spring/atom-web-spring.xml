@@ -44,9 +44,9 @@
 		<property name="add" ref="getAtomBeforeViewHandler"/>
 	</bean>
 	
-	<bean id="atomOptimizeInterceptor" class="com.atom.interceptors.AtomOptimizeInterceptor">
+<!-- 	<bean id="atomOptimizeInterceptor" class="com.atom.interceptors.AtomOptimizeInterceptor">
 		<property name="siteConfigService" ref="siteConfigService"/>
-	</bean>
+	</bean> -->
 	
 	<bean id="getAtomOptimizeBeforeViewHandler" parent="beforeViewHandlerAdapter">
 		<property name="adaptee">
