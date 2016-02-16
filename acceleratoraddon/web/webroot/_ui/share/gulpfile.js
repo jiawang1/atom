@@ -91,7 +91,7 @@ gulp.task("compile-less", ["prepare-config"], function(cb) {
 				.pipe(sourcemaps.init())
 				.pipe(less())
 				.pipe(sourcemaps.write("."))
-				.pipe(gulp.dest(__destFolder || oConfiguration.lessSourceFile[i].substring(0, oConfiguration.lessSourceFile[i].length - 6)));
+				.pipe(gulp.dest(__destFolder));
 
 			cb();
 		}

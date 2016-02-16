@@ -2,7 +2,7 @@
 
 var through = require("through2");
 var crypto = require('crypto');
-var fs = require("fs");
+var gutil = require('gulp-util');
 
 var generateHash = function(opt){
 
