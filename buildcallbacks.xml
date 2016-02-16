@@ -76,13 +76,13 @@
 -->
 <project name="atom_buildcallbacks">
 
-	<property name="storefront.path" value="${ext.adamstorefront.path}">
+	<property name="storefront.path" value="${ext.nemostorefront.path}">
 	</property>
 	<macrodef name="generateAddonPath">
 		<sequential>
 			<var name="addPath" value="">
 			</var>
-			<for list="b2ccheckoutaddon" param="letter">
+			<for list="lenovowcms,tsasmaddon,commonaddon" param="letter">
 				<sequential>
 					<var name="addPath" value="${addPath},@{letter}:${ext.@{letter}.path}">
 					</var>

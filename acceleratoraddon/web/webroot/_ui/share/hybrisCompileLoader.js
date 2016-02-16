@@ -3,6 +3,7 @@ var path = require("path");
 var fs = require('fs');
 var Q = require('q');
 var extractor = require('./extractFile');
+var logger = require('./logger');
 
 const SEPERATOR = ",", 
 	  ADDON_ROOT="./_ui/",
@@ -29,7 +30,7 @@ exports.generateConfigutation = function(oConfiguration){
 
 	var deferred = Q.defer();
 	var configPath = path.join( oConfiguration.currentPath + "/config.properties");
-	console.log("current config " + configPath);
+	logger.log("current config " + configPath);
 	var oLoader = new PropertiesLoader(configPath);
 
 /*  load configuration from properties file, prepare source for gulp task */
@@ -39,7 +40,7 @@ exports.generateConfigutation = function(oConfiguration){
 		 			var _value = oLoader.findPropertyValue(sConfigFile, aParam[i].value, aParam[i].seperator);
 
 					oConfiguration[aParam[i].key] = prepareParam(_value);
-					console.info(aParam[i].key + ":" + oConfiguration[aParam[i].key]);
+					logger.log(aParam[i].key + ":" + oConfiguration[aParam[i].key]);
 
 		 		}
 
@@ -75,10 +76,14 @@ exports.generateConfigutation = function(oConfiguration){
 
 					Q.all([extractor.extractCSS(cssFile), extractor.extractJS(jsFile)]).spread(function(aCSSMap, oJSMap){
 						
-						concatRoot(oConfiguration.jsRootPath, oJSMap.js, oJSMap.minjs);
+						concatRoot(oConfiguration.jsRootPath, oJSMap.js);
 						concatRoot(oConfiguration.cssRootPath, aCSSMap);
 						oConfiguration.oJSMap = oJSMap;
 						oConfiguration.aCSSMap = aCSSMap;
+						logger.log( 'js files ' + oConfiguration.oJSMap.js.length);
+						logger.log( oConfiguration.oJSMap.js);
+						logger.log( 'css files ' + oConfiguration.aCSSMap.length);
+						logger.log( oConfiguration.aCSSMap);
 						deferred.resolve(oConfiguration);
 						
 					}).fail(function(err){
@@ -146,7 +151,7 @@ exports.generateAddonResources = function(oConfiguration){
 				"cssMap":aCSS
 			});
 		}, function(err){	
-			console.error(err);
+			logger.error(err);
 			deferred.reject(err);	
 		});
 		return defer.promise;
@@ -171,7 +176,7 @@ exports.generateAddonResources = function(oConfiguration){
 };
 
 // function promiseWrite(content){
-// 	console.log("write file compileJson.json")
+// 	logger.log("write file compileJson.json")
 // 	return Q.denodeify(fs.writeFile("compileJson.json", JSON.stringify(content)));
 // }
 

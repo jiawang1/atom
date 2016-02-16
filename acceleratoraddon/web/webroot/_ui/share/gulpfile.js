@@ -10,7 +10,9 @@ var gulp = require('gulp'),
 	Q = require('q'),
 	cssimport = require("gulp-cssimport"),
 	sourcemaps = require('gulp-sourcemaps'),
-	compilor = require("./hybrisCompileLoader");
+	compilor = require("./hybrisCompileLoader"),
+	logger = require('./logger');
+	var hashGenerator = require("./hashFileName");
 
 var oConfiguration = (function(args) {
 
@@ -23,7 +25,7 @@ var oConfiguration = (function(args) {
 	for (var i = 0, j = args.length; i < j; i++) {
 		if(args[i].search(/^--.*/) >= 0){
 			_o[args[i].substring(2)] = args[i + 1];
-			console.info(args[i].substring(2) + " value is " + _o[args[i].substring(2)]);
+			logger.log(args[i].substring(2) + " value is " + _o[args[i].substring(2)]);
 			i++;
 		}
 	}
@@ -42,7 +44,7 @@ gulp.task("prepare-config", function(cb) {
 			cb();
 		},
 		function(err){
-			console.log(err);
+			logger.log(err);
 			cb(err);}
 		);
 });
@@ -55,7 +57,7 @@ gulp.task("js-lint", ["prepare-config"], function(cb) {
 		fs.readFile(path.join(__dirname + "/package.json"),"utf8",function(err, data){
 			var _options = {};
 			if(err){
-				console.error("read hint configuration file failed: " + err);
+				logger.error("read hint configuration file failed: " + err);
 			}else{
 				_options = JSON.parse(data).jshintConfig;
 			}
@@ -106,11 +108,13 @@ gulp.task("compress-css", ['compile-less', "prepare-config"], function(cb) {
 				"port": oConfiguration.buildProxyPort
 			}
 		} : undefined;
-		gulp.src(oConfiguration.aCSSMap)
+
+		gulp.src("_ui/desktop/common/ISS_Static/WW/css/themes/owv2/mq.css")
 			.pipe(cssimport(__oprions))
 			.pipe(sourcemaps.init())
-			.pipe(concat("combind.min_" + oConfiguration.fileSuffix + ".css"))
+			.pipe(concat("combind.min.css"))
 			.pipe(minifycss())
+			.pipe(hashGenerator())
 			.pipe(sourcemaps.write("."))
 			.pipe(gulp.dest(oConfiguration.combindCSSDest));
 		cb();
@@ -125,12 +129,13 @@ gulp.task("compress-js", ["prepare-config"], function(cb) {
 		if (oConfiguration.combindJSDest) {
 			try {
 				fs.accessSync(oConfiguration.combindJSDest, fs.W_OK);
-				merge(gulp.src(oConfiguration.oJSMap.minjs), minifyjs(oConfiguration.oJSMap.js))
-					.pipe(concat("combind.min_" + oConfiguration.fileSuffix + ".js"))
+				merge(minifyjs(oConfiguration.oJSMap.js))
+					.pipe(concat("combind.min.js"))
+					.pipe(hashGenerator())
 					.pipe(gulp.dest(oConfiguration.combindJSDest));
 				cb();
 			} catch (err) {
-				console.log(err);
+				logger.log(err);
 				cb(err);
 			}
 		}
@@ -147,12 +152,31 @@ gulp.task("compress-js", ["prepare-config"], function(cb) {
 
 gulp.task("default", ["compress-css", "js-lint", "compress-js"], function(cb) {
 
-	var _fileName = path.join(oConfiguration.webRoot + "/WEB-INF/tags/shared/variables/generateCompressName.jsp");
+	// generate JSP for file name
+	const __generatedFile ="/WEB-INF/tags/shared/variables/generateCompressName.jsp";
+	
+		__generatedFile.split("/").reduce(function(prev, current, index, arr){
+	
+			if(index < arr.length -1 ){
+					var __currentPath = prev + "/" + current; 
+					if(!fs.existsSync(__currentPath)){
+						fs.mkdirSync(__currentPath);
+						}
+				}
+
+				return __currentPath;
+		},oConfiguration.webRoot);
+
+
+	var _fileName = path.join(oConfiguration.webRoot + __generatedFile );
 	var _fContent = "<%@ taglib prefix=\"c\" uri=\"http://java.sun.com/jsp/jstl/core\"%>\n <c:set var=\"compressFileSuffix\" scope=\"session\" value=\"" + oConfiguration.fileSuffix + "\"/>";
 	fs.writeFile(_fileName, _fContent, 'utf8', function(err) {
-
-		console.log("generate file finish");
-		cb(err);
+		if(err){
+			 logger.log("generate file failed");
+			}else{
+					logger.log("generate file finish");
+				}
+			cb(err);
 	});
 
 });

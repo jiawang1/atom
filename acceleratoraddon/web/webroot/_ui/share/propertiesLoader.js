@@ -1,6 +1,7 @@
 var fs = require("fs");
 var path = require("path");
 var Q = require('q');
+var logger = require('./logger');
 
 var PropertiesLoader = function(file){
 
@@ -17,18 +18,18 @@ PropertiesLoader.prototype.loadFile = function(){
 	var rs = fs.createReadStream(this.file);
 
 	rs.on("open", function(fd){
-		console.log("start to read file: " +  this.file);
+		logger.log("start to read file: " +  this.file);
 	}.bind(this));
 
 	rs.on("data", function(data){
-		console.log("get data for: " +  this.file);
+		logger.log("get data for: " +  this.file);
 		chunks.push(data);
 		_length = _length + data.length;
 
 	}.bind(this));
 
 	rs.on("end", function(){
-		console.log("file read end for " + this.file);
+		logger.log("file read end for " + this.file);
 		var chunk, position = 0;
 		var _buffer = new Buffer(_length);
 
@@ -46,7 +47,7 @@ PropertiesLoader.prototype.loadFile = function(){
 	}.bind(this));
 
 	rs.on("error", function(err){
-		console.log("read file " + this.file + " failed : " + err);
+		logger.log("read file " + this.file + " failed : " + err);
 		deferred.reject(err);
 	}.bind(this));
 	  
