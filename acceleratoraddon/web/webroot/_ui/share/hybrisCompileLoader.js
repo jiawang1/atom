@@ -117,8 +117,8 @@ exports.generateAddonResources = function(oConfiguration){
 
 	var addonPath = oConfiguration.addonPath,
 		userEx = oConfiguration.userExperience,
-		deferred = Q.defer(),
-		aAddon = addonPath.split(SEPERATOR);
+		deferred = Q.defer();
+	var	aAddon = addonPath.split(SEPERATOR);
 	aAddon = aAddon[0].trim().length===0?aAddon.slice(1):aAddon;  
 
 	Q.all(aAddon.map(function(item){			 // format of item is addonName:addonPath

@@ -77,7 +77,7 @@ public class AtomOptimizeViewHandler implements BeforeViewHandlerAdaptee
 			}
 		}
 		
-		if(session.getAttribute(AtomConstants.COMPRESS_FILE_SUFFIX) == null){
+		if(session.getAttribute(AtomConstants.COMPRESS_JS_KEY) == null){
 			RequestDispatcher requestDispatcher = request.getServletContext().getRequestDispatcher("/WEB-INF/tags/shared/variables/generateCompressName.jsp");
 			requestDispatcher.include(request, response);
 		}

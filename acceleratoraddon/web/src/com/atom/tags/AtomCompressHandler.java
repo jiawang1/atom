@@ -63,15 +63,14 @@ public class AtomCompressHandler extends AbstractTagHandler
 		List<Element> elist = getTagsFromString(body, Tags.LINK);
 		String newBody = null;
 		
-		
-		String suffix = (String)this.tp.getHttpRequest().getSession().getAttribute(AtomConstants.COMPRESS_FILE_SUFFIX);
-		suffix = suffix==null?"":suffix;
 		if(elist != null && elist.size() > 0){
-			newBody = generateBody(body,elist, "href", "combind.min_" + suffix+ ".css", this.tp.getCssDestPath(), _commentBody);
+			String name = (String)this.tp.getHttpRequest().getSession().getAttribute(AtomConstants.COMPRESS_CSS_KEY);
+			newBody = generateBody(body,elist, "href", name, this.tp.getCssDestPath(), _commentBody);
 		}else{
 			elist = getTagsFromString(body, Tags.SCRIPT);
 			if(elist != null && elist.size() > 0 ){
-				newBody = generateBody(body, elist, "src", "combind.min_" + suffix+ ".js",this.tp.getJsDestPath(),_commentBody);
+				String name = (String)this.tp.getHttpRequest().getSession().getAttribute(AtomConstants.COMPRESS_JS_KEY);
+				newBody = generateBody(body, elist, "src", name,this.tp.getJsDestPath(),_commentBody);
 			}
 		}
 		newBody = newBody == null?body:newBody;

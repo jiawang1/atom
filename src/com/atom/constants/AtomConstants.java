@@ -30,5 +30,6 @@ public final class AtomConstants extends GeneratedAtomConstants
 	public static final String COMPRESS_ENABLE = "compressEnabled";
 	public static final String COMPRESS_JS_PATH = "compressDestJSPath";
 	public static final String COMPRESS_CSS_PATH = "compressDestCSSPath";
-	public static final String COMPRESS_FILE_SUFFIX = "compressFileSuffix";
+	public static final String COMPRESS_CSS_KEY = "combindcss_min";
+	public static final String COMPRESS_JS_KEY = "combindjs_min";
 }

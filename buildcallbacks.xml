@@ -76,13 +76,13 @@
 -->
 <project name="atom_buildcallbacks">
 
-	<property name="storefront.path" value="${ext.nemostorefront.path}">
+	<property name="storefront.path" value="${ext.adamstorefront.path}">
 	</property>
 	<macrodef name="generateAddonPath">
 		<sequential>
 			<var name="addPath" value="">
 			</var>
-			<for list="lenovowcms,tsasmaddon,commonaddon" param="letter">
+			<for list="b2ccheckoutaddon" param="letter">
 				<sequential>
 					<var name="addPath" value="${addPath},@{letter}:${ext.@{letter}.path}">
 					</var>
@@ -125,6 +125,7 @@
 			<copy todir="${storefront.path}/web/webroot/_ui/addons/atom/share">
 				<fileset dir="${ext.atom.path}/acceleratoraddon/web/webroot/_ui/share">
 					<include name="*.js" />
+					<include name="*.json" />
 					<include name="./node_modules/*.js" />
 					<include name="*.properties" />
 				</fileset>
