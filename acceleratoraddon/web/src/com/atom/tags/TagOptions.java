@@ -20,6 +20,7 @@ public class TagOptions
 	private String jsDestPath = null;
 	private String cssDestPath = null;
 	private boolean onlineLess = false;
+	private boolean baseResource = false;
 	/**
 	 * @return the method
 	 */
@@ -129,4 +130,11 @@ public class TagOptions
 		return this.onlineLess;
 	}
 	
+	public void setBaseResource(boolean baseResource){
+		this.baseResource = baseResource;
+	}
+	
+	public boolean isBaseResource(){
+		return this.baseResource;
+	}
 }

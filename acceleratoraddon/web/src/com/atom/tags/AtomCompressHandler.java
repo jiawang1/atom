@@ -5,8 +5,9 @@ package com.atom.tags;
 
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.jgroups.protocols.TP;
-
+import javax.servlet.http.HttpServletRequest;
 import net.sf.cglib.core.CollectionUtils;
 
 import com.atom.constants.AtomConstants;
@@ -45,6 +46,8 @@ public class AtomCompressHandler extends AbstractTagHandler
 		int _cursor = 0;
 		int _from = -1;
 		int _to = -1;
+		
+		String path = getContextRelativePath(this.tp.getHttpRequest());
 		do{
 			_from = body.indexOf("<!--[if",_cursor);
 			if(_from >= 0){
@@ -60,19 +63,20 @@ public class AtomCompressHandler extends AbstractTagHandler
 		}while(_from >= 0);
 		body = _newBody.length() > 0? _newBody.toString():body; 
 		
-		List<Element> elist = getTagsFromString(body, Tags.LINK);
+		List<Element> eCSSlist = getTagsFromString(body, Tags.LINK);
+		List<Element> eJSlist = getTagsFromString(body, Tags.SCRIPT);
 		String newBody = null;
 		
-		if(elist != null && elist.size() > 0){
-			String name = (String)this.tp.getHttpRequest().getSession().getAttribute(AtomConstants.COMPRESS_CSS_KEY);
-			newBody = generateBody(body,elist, "href", name, this.tp.getCssDestPath(), _commentBody);
-		}else{
-			elist = getTagsFromString(body, Tags.SCRIPT);
-			if(elist != null && elist.size() > 0 ){
-				String name = (String)this.tp.getHttpRequest().getSession().getAttribute(AtomConstants.COMPRESS_JS_KEY);
-				newBody = generateBody(body, elist, "src", name,this.tp.getJsDestPath(),_commentBody);
-			}
+		if(eCSSlist != null && eCSSlist.size() > 0){
+			String name = generateName("css");
+			newBody = generateBody(body,eCSSlist, "href", name, this.tp.getCssDestPath(), _commentBody);
 		}
+		
+		if(eJSlist != null && eJSlist.size() > 0 ){
+			String name = generateName("js");
+			newBody = generateBody(body, eJSlist, "src", name,this.tp.getJsDestPath(),_commentBody);
+		}
+
 		newBody = newBody == null?body:newBody;
 		
 		if(this.hasNext()){
@@ -113,8 +117,35 @@ public class AtomCompressHandler extends AbstractTagHandler
 		return sb.toString();
 	}
 	
-	private boolean isCodedElement(Element ele ){
+	private boolean isCodedElement(Element ele){
 		return ele.getContentAsString().trim().length() > 0;
+	}
+	
+	/*
+	 * try to get path relative to WEB-INF, example
+	 * if the page is localted in /WEb-INF/views/desktop/product/productPage.jsp;
+	 * so this method will expected to return /views/desktop/product/productPage.jsp
+	 */
+	
+	protected String getContextRelativePath(HttpServletRequest request)
+	{
+		String path = request.getPathInfo();
+		if(StringUtils.isEmpty(path)){
+			path = request.getServletPath();
+		}
+		
+		return path;
+	}
+	
+	protected String generateName(String suffix)
+	{
+		if(this.tp.isBaseResource()){
+			return (String)this.tp.getHttpRequest().getSession().getAttribute(AtomConstants.COMPRESS_KEY + suffix);
+		}else{
+			String path = getContextRelativePath(this.tp.getHttpRequest());
+			path = path.substring(0, path.length() - 4);
+			return (String)this.tp.getHttpRequest().getSession().getAttribute((path + "_" + suffix).replaceAll("/", "_"));
+		}
 	}
 	
 }

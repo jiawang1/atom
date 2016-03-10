@@ -12,13 +12,16 @@ var gulp = require('gulp'),
 	sourcemaps = require('gulp-sourcemaps'),
 	compilor = require("./hybrisCompileLoader"),
 	logger = require('./logger'),
-    hashGenerator = require("./hashFileName"),
+	hashGenerator = require("./hashFileName"),
 	mapName = require("./mapFileName.js");
 const SEP = "_",
-	  COMBINED_JS='combindjs_min.js',
-	  COMBINED_CSS='combindcss_min.css';
+	COMBINED_JS = 'combindjs.js',
+	COMBINED_CSS = 'combindcss.css';
 var __cssNameMap = [],
 	__jsNameMap = [];
+
+console.time("gulp_tasks");
+
 var oConfiguration = (function(args) {
 
 	var _o = {
@@ -83,7 +86,6 @@ gulp.task("js-lint", ["prepare-config"], function(cb) {
 	} else {
 		cb();
 	}
-
 });
 
 gulp.task("compile-less", ["prepare-config"], function(cb) {
@@ -106,45 +108,71 @@ gulp.task("compile-less", ["prepare-config"], function(cb) {
 
 gulp.task("compress-css", ['compile-less', "prepare-config"], function(cb) {
 	if (oConfiguration.enableCompress === "true") {
-		var __oprions = oConfiguration.buildProxyHost ? {
+
+		var option = oConfiguration.buildProxyHost ? {
 			"httpRequestOptions": {
 				"host": oConfiguration.buildProxyHost,
 				"port": oConfiguration.buildProxyPort
 			}
 		} : undefined;
 
-		gulp.src(oConfiguration.aCSSMap)
-			.pipe(cssimport(__oprions))
-			.pipe(sourcemaps.init())
-			.pipe(concat(COMBINED_CSS))
-			.pipe(minifycss())
-			.pipe(hashGenerator())
-			.pipe(mapName(__cssNameMap, SEP))
-			.pipe(sourcemaps.write("."))
-			.pipe(gulp.dest(oConfiguration.combindCSSDest))
-			.on('end', function() {
-				logger.log(__cssNameMap);
-				cb();
-			});
+		var aDefer = oConfiguration.aAddiCSSMap.map(function(item) {
+			return __compressCSS(item.value, item.key + ".css", option);
+		});
+		aDefer.push(__compressCSS(oConfiguration.aCSSMap, COMBINED_CSS, option));
 
+		Q.all(aDefer).then(function() {
+			logger.log("compress css finished");
+			cb();
+		}).fail(function(err) {
+			logger.error(err);
+			cb(err);
+		});
 	} else {
 		cb();
 	}
 });
+
+
+function __compressCSS(aSrc, fileName, option) {
+	var defer = Q.defer();
+
+	gulp.src(aSrc)
+		.pipe(cssimport(option))
+		.pipe(sourcemaps.init())
+		.pipe(concat(fileName))
+		.pipe(minifycss())
+		.pipe(hashGenerator())
+		.pipe(mapName(__cssNameMap, SEP))
+		.pipe(sourcemaps.write("."))
+		.pipe(gulp.dest(oConfiguration.combindCSSDest))
+		.on('end', function() {
+			logger.log(__cssNameMap);
+			defer.resolve();
+
+		});
+	return defer.promise;
+}
 
 gulp.task("compress-js", ["prepare-config"], function(cb) {
 	if (oConfiguration.enableCompress === "true") {
 		if (oConfiguration.combindJSDest) {
 			try {
 				fs.accessSync(oConfiguration.combindJSDest, fs.W_OK);
-				merge(minifyjs(oConfiguration.oJSMap.js))
-					.pipe(concat(COMBINED_JS))
-					.pipe(hashGenerator())
-					.pipe(mapName(__jsNameMap, SEP))
-					.pipe(gulp.dest(oConfiguration.combindJSDest))
-					.on('end', function() {
-						cb();
-					});
+
+				var aDefer = oConfiguration.aAddiJSMap.map(function(item) {
+					return __compressJS(item.value, item.key + ".js");
+				});
+				aDefer.push(__compressJS(oConfiguration.oJSMap.js, COMBINED_JS));
+
+				Q.all(aDefer).then(function() {
+					logger.log("compress js finished");
+					cb();
+				}).fail(function(err) {
+					logger.error(err);
+					cb(err);
+				});
+
 			} catch (err) {
 				logger.error(err);
 				cb(err);
@@ -153,12 +181,30 @@ gulp.task("compress-js", ["prepare-config"], function(cb) {
 	} else {
 		cb();
 	}
+
 	function minifyjs(files) {
 		return gulp.src(files)
 			.pipe(uglify());
 	}
 
 });
+
+function __compressJS(aSrc, fileName) {
+	var defer = Q.defer();
+	gulp.src(aSrc)
+		.pipe(sourcemaps.init())
+		.pipe(uglify())
+		.pipe(concat(fileName))
+		.pipe(hashGenerator())
+		.pipe(mapName(__jsNameMap, SEP))
+		.pipe(sourcemaps.write("."))
+		.pipe(gulp.dest(oConfiguration.combindJSDest))
+		.on('end', function() {
+			defer.resolve();
+		});
+	logger.log(fileName);
+	return defer.promise;
+}
 
 gulp.task("default", ["compress-css", "js-lint", "compress-js"], function(cb) {
 
@@ -175,12 +221,11 @@ gulp.task("default", ["compress-css", "js-lint", "compress-js"], function(cb) {
 		return __currentPath;
 	}, oConfiguration.webRoot);
 
-	function buildeJSP(aMap){
-		return	aMap.reduce(function(prev, item){
-			return prev + "\n <c:set var=\""+ item.key +"\" scope=\"session\" value=\"" + item.value + "\"/>";
-		},'');
+	function buildeJSP(aMap) {
+		return aMap.reduce(function(prev, item) {
+			return prev + "\n <c:set var=\"" + item.key + "\" scope=\"session\" value=\"" + item.value + "\"/>";
+		}, '');
 	}
-
 
 	var _fileName = path.join(oConfiguration.webRoot + __generatedFile);
 	var _fContent = "<%@ taglib prefix=\"c\" uri=\"http://java.sun.com/jsp/jstl/core\"%> " + buildeJSP(__jsNameMap.concat(__cssNameMap));
@@ -189,10 +234,11 @@ gulp.task("default", ["compress-css", "js-lint", "compress-js"], function(cb) {
 			logger.error("generate file failed");
 		} else {
 			logger.log("generate file finish");
+			console.timeEnd("gulp_tasks");
 		}
 		cb(err);
 	});
 
 });
 
-//default --gulpfile ./_ui/addons/atom/share/gulpfile.js --cwd . --devEnable true
+//node-debug /Users/i054410/.nvm/versions/node/v5.4.1/bin/gulp default --gulpfile  /Users/i054410/Documents/git/github-payment/hybris-5.6/hybris/bin/custom/adam/adamstorefront/web/webroot/_ui/addons/atom/share/gulpfile.js --cwd /Users/i054410/Documents/git/github-payment/hybris-5.6/hybris/bin/custom/adam/adamstorefront/web/webroot --devEnable true --addonPath ,b2ccheckoutaddon:/Users/i054410/Documents/git/github-payment/hybris-5.6/hybris/bin/ext-addon/b2ccheckoutaddon

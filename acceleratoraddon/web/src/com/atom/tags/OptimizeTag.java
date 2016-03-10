@@ -26,10 +26,13 @@ import com.atom.httpwrapper.RemoveEncodingRequestWrapper;
 public class OptimizeTag extends CompressTag
 {	
 	private static final String METHOD = null;
-	private static final String ID = null;
+//	private static final String ID = null;
 	private static final String OPTIONS = null;
-	private static final String BASEPATH = null;
+//	private static final String BASEPATH = null;
 	private String urlpattern = null;
+	private String id = null;
+	private String basePath = null;
+	private Boolean baseresource = false;
 	
 
 	@Override
@@ -42,12 +45,13 @@ public class OptimizeTag extends CompressTag
 		bodyContent.clearBody();
 		
 		TagOptions tp = new TagOptions();
-		tp.setBasePath(BASEPATH);
+		tp.setBasePath(this.basePath);
 		tp.setHttpRequest(httpRequest);
-		tp.setID(ID);
+		tp.setID(this.id);
 		tp.setMethod(METHOD);
 		tp.setOptions(OPTIONS);
 		tp.setUrlpattern(urlpattern);
+		tp.setBaseResource(baseresource.booleanValue());
 		AbstractTagHandler handler = AbstractTagHandler.buildHandlerChain(tp);
 			try
 			{	
@@ -66,4 +70,18 @@ public class OptimizeTag extends CompressTag
 	public void setUrlpattern(String urlPattern){
 		this.urlpattern = urlPattern;
 	}
+	
+	public void setId(String id)
+	{
+		this.id = id;
+	}
+	
+	public void setBasePath(String basePath){
+		this.basePath = basePath;
+	}
+	
+	public void setBaseresource(Boolean baseresource){
+		this.baseresource = baseresource;
+	}
+	
 }

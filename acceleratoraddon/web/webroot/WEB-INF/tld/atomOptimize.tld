@@ -24,6 +24,11 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
+			<name>baseresource</name>
+			<required>false</required>
+			<type>java.util.Boolean</type>
+		</attribute> 
+		<attribute>
 			<name>options</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
