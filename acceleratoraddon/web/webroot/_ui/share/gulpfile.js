@@ -47,7 +47,7 @@ gulp.task("prepare-config", function(cb) {
 		function(aData) {
 			oConfiguration = aData[0];
 			oConfiguration.aCSSMap = oConfiguration.aCSSMap.concat(aData[1].cssMap);
-			oConfiguration.oJSMap.js = oConfiguration.oJSMap.js.concat(aData[1].jsMap);
+			oConfiguration.aJSMap = oConfiguration.aJSMap.concat(aData[1].jsMap);
 			cb();
 		},
 		function(err) {
@@ -69,7 +69,7 @@ gulp.task("js-lint", ["prepare-config"], function(cb) {
 			} else {
 				_options = JSON.parse(data).jshintConfig;
 			}
-			var aSrc = oConfiguration.oJSMap.js;
+			var aSrc = oConfiguration.aJSMap;
 			if (oConfiguration.enableHintExtract && oConfiguration.hintExtractFolders.length > 0) {
 				aSrc = aSrc.concat(oConfiguration.hintExtractFolders);
 				gulp.src(aSrc)
@@ -163,7 +163,7 @@ gulp.task("compress-js", ["prepare-config"], function(cb) {
 				var aDefer = oConfiguration.aAddiJSMap.map(function(item) {
 					return __compressJS(item.value, item.key + ".js");
 				});
-				aDefer.push(__compressJS(oConfiguration.oJSMap.js, COMBINED_JS));
+				aDefer.push(__compressJS(oConfiguration.aJSMap, COMBINED_JS));
 
 				Q.all(aDefer).then(function() {
 					logger.log("compress js finished");

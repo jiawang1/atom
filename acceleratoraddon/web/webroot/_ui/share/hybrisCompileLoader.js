@@ -107,16 +107,16 @@ exports.generateConfigutation = function(oConfiguration) {
 				var jsFile = path.normalize(oConfiguration.compressSourceFolder + "/js.tag");
 				var cssFile = path.normalize(oConfiguration.compressSourceFolder + "/css.tag");
 
-				Q.all([extractor.extractCSS(cssFile), extractor.extractJS(jsFile), extractor.extractAdditionalResource(oConfiguration.webRoot, oConfiguration.aAdditionalSource)]).spread(function(aCSSMap, oJSMap, oAddi) {
+				Q.all([extractor.extractCSS(cssFile), extractor.extractJS(jsFile), extractor.extractAdditionalResource(oConfiguration.webRoot, oConfiguration.aAdditionalSource)]).spread(function(aCSSMap, aJSMap, oAddi) {
 
-					__concatRoot(oConfiguration.jsRootPath, oJSMap.js);
+					__concatRoot(oConfiguration.jsRootPath, aJSMap);
 					__concatRoot(oConfiguration.cssRootPath, aCSSMap);
 					__concatRoot(oConfiguration.jsRootPath, oAddi.aJSMap);
 					__concatRoot(oConfiguration.cssRootPath, oAddi.aCSSMap);
-					oConfiguration.oJSMap = oJSMap;
+					oConfiguration.aJSMap = aJSMap;
 					oConfiguration.aCSSMap = aCSSMap;
-					logger.log('js files ' + oConfiguration.oJSMap.js.length);
-					logger.log(oConfiguration.oJSMap.js);
+					logger.log('js files ' + oConfiguration.aJSMap.length);
+					logger.log(oConfiguration.aJSMap);
 					logger.log('css files ' + oConfiguration.aCSSMap.length);
 					logger.log(oConfiguration.aCSSMap);
 					oConfiguration.aAddiJSMap = oAddi.aJSMap;
